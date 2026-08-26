@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 5: Move-In Confirmed & Gate Passcode | {{custom_values.facility_name}}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f2f0eb; color: #191510; }
+    h1, h2, h3, h4, .font-heading { font-family: 'IBM Plex Sans', sans-serif; }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(210, 81, 10, 0.2); }
+      50% { box-shadow: 0 0 35px rgba(210, 81, 10, 0.35); }
+    }
+    .glow-card { animation: pulse-glow 3s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-[#f2f0eb] text-[#191510] font-sans antialiased selection:bg-[#D2510A] selection:text-white">
+
+  <!-- Navigation -->
+  <header class="border-b border-[#E4DFD4] bg-[#f2f0eb]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#D2510A] rounded-xl flex items-center justify-center font-black text-white text-xl font-heading shadow-sm">SG</div>
+        <div>
+          <h1 class="font-bold text-lg text-[#191510] leading-tight font-heading">{{custom_values.facility_name}}</h1>
+          <p class="text-xs text-[#D2510A] font-semibold">● 24/7 Automated Move-In Facility</p>
+        </div>
+      </div>
+      <span class="text-xs font-bold bg-[#D2510A]/10 text-[#D2510A] px-3 py-1.5 rounded-xl border border-[#D2510A]/20">
+        ✅ Move-In Confirmed
+      </span>
+    </div>
+  </header>
+
+  <!-- Progress Bar (5 Steps - All Complete) -->
+  <div class="bg-white border-b border-[#E4DFD4] py-3">
+    <div class="max-w-4xl mx-auto px-4 flex items-center justify-between text-xs font-bold">
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30">✓</span>
+        <span class="hidden md:inline">Select Unit</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#D2510A]"></div>
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30">✓</span>
+        <span class="hidden md:inline">Verify ID</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#D2510A]"></div>
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30">✓</span>
+        <span class="hidden md:inline">Sign Lease</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#D2510A]"></div>
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30">✓</span>
+        <span class="hidden md:inline">Payment</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#D2510A]"></div>
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A] text-white flex items-center justify-center font-black">✓</span>
+        <span class="font-black">Get Code</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-3xl mx-auto px-4 py-8 text-center">
+
+    <!-- Celebration Badge -->
+    <div class="inline-flex items-center gap-2 bg-[#D2510A]/10 border border-[#D2510A]/30 text-[#D2510A] px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-4 animate-bounce">
+      🎉 You're Officially Moved In!
+    </div>
+    
+    <h2 class="text-3xl md:text-5xl font-black text-[#191510] tracking-tight font-heading">Your Digital Pass is Active</h2>
+    <p class="text-[#5C5346] text-sm md:text-base mt-2 max-w-xl mx-auto">
+      Your unique PINs have been programmed into the main gate and smart unit lock, and texted to your phone.
+    </p>
+
+    <!-- Digital Access Card -->
+    <div class="mt-8 bg-white border-2 border-[#D2510A] rounded-3xl p-6 md:p-8 shadow-xl glow-card text-left">
+      
+      <div class="flex items-center justify-between border-b border-[#E4DFD4] pb-4">
+        <div>
+          <span class="text-xs font-bold text-[#5C5346] uppercase tracking-wider">Assigned Unit</span>
+          <h3 class="text-3xl font-black text-[#191510] font-heading" id="passUnitNumber">Unit A-108</h3>
+        </div>
+        <div class="text-right">
+          <span class="text-xs font-bold text-[#D2510A] bg-[#D2510A]/10 border border-[#D2510A]/20 px-3 py-1 rounded-lg">
+            Smart Lock Active
+          </span>
+        </div>
+      </div>
+
+      <!-- Codes Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-6">
+        
+        <!-- Main Gate Code -->
+        <div class="bg-[#f8f7f4] p-5 rounded-2xl border border-[#E4DFD4]">
+          <div class="flex items-center gap-2 text-xs font-bold text-[#5C5346] uppercase tracking-wider">
+            <span>🚪</span> Main Entry Gate PIN
+          </div>
+          <div class="text-3xl md:text-4xl font-black text-[#D2510A] font-mono mt-2 tracking-wider" id="passGateCode">
+            6250#
+          </div>
+          <p class="text-[11px] text-[#5C5346] mt-1">Enter code followed by # at the driveway keypad</p>
+        </div>
+
+        <!-- Smart Unit Lock PIN -->
+        <div class="bg-[#f8f7f4] p-5 rounded-2xl border border-[#E4DFD4]">
+          <div class="flex items-center gap-2 text-xs font-bold text-[#5C5346] uppercase tracking-wider">
+            <span>🔒</span> Smart Unit Lock PIN
+          </div>
+          <div class="text-3xl md:text-4xl font-black text-[#D2510A] font-mono mt-2 tracking-wider" id="passUnitPin">
+            958431#
+          </div>
+          <p class="text-[11px] text-[#5C5346] mt-1">Touch keypad to wake up lock, enter 6 digits + #</p>
+        </div>
+
+      </div>
+
+      <!-- Facility Details (Dynamic) -->
+      <div class="bg-[#f8f7f4] p-4 rounded-xl border border-[#E4DFD4] text-xs space-y-2 text-[#5C5346]">
+        <div class="flex items-center justify-between">
+          <span class="text-[#5C5346]">Facility Hours:</span>
+          <span class="font-bold text-[#191510]">{{custom_values.facility_gate_hours}}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-[#5C5346]">Address:</span>
+          <span class="font-bold text-[#191510]">{{custom_values.facility_address}}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Quick Help & Actions (Dynamic) -->
+    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="https://maps.google.com/?q={{custom_values.facility_address}}" target="_blank" class="w-full sm:w-auto bg-white hover:bg-[#f8f7f4] text-[#191510] font-bold px-6 py-3.5 rounded-xl border border-[#E4DFD4] transition flex items-center justify-center gap-2 text-sm shadow-sm">
+        🗺️ Open in Google Maps
+      </a>
+      <a href="tel:{{custom_values.facility_phone}}" class="w-full sm:w-auto bg-[#191510] hover:bg-black text-white font-bold px-6 py-3.5 rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-sm">
+        📞 Call Gate Dispatch: {{custom_values.facility_phone}}
+      </a>
+    </div>
+
+    <!-- Rescue Code Reminder Box (Dynamic) -->
+    <div class="mt-6 bg-white border border-[#E4DFD4] rounded-2xl p-4 text-xs text-[#5C5346] max-w-lg mx-auto shadow-sm">
+      💡 <strong>Pro Tip:</strong> If you ever forget your gate code, simply text the word <strong class="text-[#D2510A]">"CODE"</strong> to <strong>{{custom_values.facility_phone}}</strong> and our AI assistant will text back your PIN in 1 second!
+    </div>
+
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const unit = params.get('unit') || 'A-108';
+    const gate = params.get('gate') || '6250#';
+    const pin = params.get('pin') || '958431';
+
+    document.getElementById('passUnitNumber').innerText = `Unit ${unit}`;
+    document.getElementById('passGateCode').innerText = gate.endsWith('#') ? gate : `${gate}#`;
+    document.getElementById('passUnitPin').innerText = pin.endsWith('#') ? pin : `${pin}#`;
+
+    // Fallback for local browser preview outside GHL
+    if (document.body.innerHTML.includes('{{custom_values.')) {
+      document.body.innerHTML = document.body.innerHTML
+        .replace(/\{\{custom_values\.facility_name\}\}/g, 'Oak Ridge Smart Self-Storage')
+        .replace(/\{\{custom_values\.facility_phone\}\}/g, '(800) 555-0199')
+        .replace(/\{\{custom_values\.facility_address\}\}/g, '1250 Industrial Blvd, Austin, TX 78701')
+        .replace(/\{\{custom_values\.facility_gate_hours\}\}/g, '6:00 AM - 10:00 PM Daily (24/7 Digital Entry)');
+    }
+  </script>
+
+</body>
+</html>

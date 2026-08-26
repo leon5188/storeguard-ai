@@ -1,0 +1,115 @@
+<!-- ==========================================================================
+     StoreGuard AI — Top Navigation & 5-Step Progress Bar (GHL Dynamic Widget)
+     适用于 GHL 页面顶部：支持 {{custom_values.xxx}} 变量自动替换
+     ========================================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@600;700;800&family=Inter:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="w-full font-sans antialiased selection:bg-[#D2510A] selection:text-white" style="font-family: 'Inter', sans-serif;">
+  
+  <!-- 1. 顶部主导航栏 (Top Navigation Bar) -->
+  <header class="w-full border-b border-[#E4DFD4] bg-[#f2f0eb] py-3.5 px-4 md:px-8">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      
+      <!-- 左侧: Logo 与品牌名称 (动态调用 GHL Custom Values) -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#D2510A] rounded-xl flex items-center justify-center font-black text-white text-lg shadow-sm" style="font-family: 'IBM Plex Sans', sans-serif;">
+          SG
+        </div>
+        <div>
+          <h1 class="font-bold text-base md:text-lg text-[#191510] leading-tight" style="font-family: 'IBM Plex Sans', sans-serif;">
+            {{custom_values.facility_name}}
+          </h1>
+          <p class="text-xs text-[#D2510A] font-semibold flex items-center gap-1.5 mt-0.5">
+            <span class="text-[9px]">●</span> 24/7 Automated Move-In Facility
+          </p>
+        </div>
+      </div>
+
+      <!-- 右侧: 安全认证徽章与客服电话 -->
+      <div class="flex items-center gap-3">
+        <a href="tel:{{custom_values.facility_phone}}" class="hidden md:flex items-center gap-1.5 text-xs font-bold text-[#5C5346] hover:text-[#191510] bg-white px-3 py-1.5 rounded-xl border border-[#E4DFD4]">
+          📞 {{custom_values.facility_phone}}
+        </a>
+        <span class="text-xs font-bold bg-[#fdfbf7] text-[#D2510A] px-3.5 py-1.5 rounded-xl border border-[#E4DFD4] shadow-xs flex items-center gap-1.5">
+          🔒 Level 1 PCI-DSS
+        </span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 2. 5 步进度指示条 (5-Step Progress Bar) -->
+  <nav class="w-full bg-white border-b border-[#E4DFD4] py-3 px-4 shadow-xs">
+    <div class="max-w-4xl mx-auto flex items-center justify-between text-xs font-bold">
+      
+      <!-- Step 1: Select Unit (已完成) -->
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30 text-xs">
+          ✓
+        </span>
+        <span class="hidden sm:inline">Select Unit</span>
+      </div>
+      
+      <!-- 连接线 1-2 (已激活) -->
+      <div class="flex-1 max-w-[40px] md:max-w-[70px] h-[2px] bg-[#D2510A] mx-1 md:mx-2"></div>
+
+      <!-- Step 2: Verify ID (已完成) -->
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30 text-xs">
+          ✓
+        </span>
+        <span class="hidden sm:inline">Verify ID</span>
+      </div>
+
+      <!-- 连接线 2-3 (已激活) -->
+      <div class="flex-1 max-w-[40px] md:max-w-[70px] h-[2px] bg-[#D2510A] mx-1 md:mx-2"></div>
+
+      <!-- Step 3: Sign Lease (已完成) -->
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30 text-xs">
+          ✓
+        </span>
+        <span class="hidden sm:inline">Sign Lease</span>
+      </div>
+
+      <!-- 连接线 3-4 (已激活) -->
+      <div class="flex-1 max-w-[40px] md:max-w-[70px] h-[2px] bg-[#D2510A] mx-1 md:mx-2"></div>
+
+      <!-- Step 4: Payment (当前激活步骤) -->
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A] text-white flex items-center justify-center font-black text-xs shadow-sm">
+          4
+        </span>
+        <span class="font-extrabold text-[#191510]">Payment</span>
+      </div>
+
+      <!-- 连接线 4-5 (未激活) -->
+      <div class="flex-1 max-w-[40px] md:max-w-[70px] h-[2px] bg-[#E4DFD4] mx-1 md:mx-2"></div>
+
+      <!-- Step 5: Get Code (未完成) -->
+      <div class="flex items-center gap-2 text-[#5C5346]/60">
+        <span class="w-6 h-6 rounded-full bg-[#f2f0eb] text-[#5C5346] flex items-center justify-center border border-[#E4DFD4] text-xs">
+          5
+        </span>
+        <span class="hidden sm:inline">Get Code</span>
+      </div>
+
+    </div>
+  </nav>
+
+</div>
+
+<script>
+  // 本地预览容错：若未在 GHL 后台渲染（即变量未被替换），自动回显优雅默认占位
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.body.innerHTML.includes('{{custom_values.facility_name}}')) {
+      document.body.innerHTML = document.body.innerHTML
+        .replace(/\{\{custom_values\.facility_name\}\}/g, 'StoreGuard Smart Storage')
+        .replace(/\{\{custom_values\.facility_phone\}\}/g, '(800) 555-0199');
+    }
+  });
+</script>

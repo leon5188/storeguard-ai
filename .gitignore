@@ -1,0 +1,22 @@
+# Node & Dependencies
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+*.log
+
+# Deployment & Internal Scripts
+deploy_*.js
+fix_prices.js
+bridge/
+
+# OS & Temp files
+.DS_Store
+*.pem
+.vercel

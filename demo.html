@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 1: Select Your Storage Unit | StoreGuard Smart Storage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f2f0eb; color: #191510; }
+    h1, h2, h3, h4, .font-heading { font-family: 'IBM Plex Sans', sans-serif; }
+    
+    /* Interactive SVG Map Styles */
+    .unit-vacant { fill: #2E7D32; stroke: #1B5E20; cursor: pointer; transition: all 0.25s ease; }
+    .unit-vacant:hover { fill: #388E3C; filter: drop-shadow(0 6px 12px rgba(46, 125, 50, 0.35)); transform: translateY(-2px); }
+    .unit-reserved { fill: #D97706; stroke: #B45309; cursor: not-allowed; opacity: 0.85; }
+    .unit-rented { fill: #D6D1C7; stroke: #BAAF9F; cursor: not-allowed; opacity: 0.95; }
+    .unit-selected { fill: #D2510A !important; stroke: #9C3804 !important; stroke-width: 3px; filter: drop-shadow(0 0 14px rgba(210, 81, 10, 0.6)); }
+    .unit-text { font-family: 'IBM Plex Sans', sans-serif; font-weight: 700; pointer-events: none; fill: #ffffff; text-anchor: middle; dominant-baseline: central; font-size: 11px; }
+    .unit-text-dark { font-family: 'IBM Plex Sans', sans-serif; font-weight: 700; pointer-events: none; fill: #5C5346; text-anchor: middle; dominant-baseline: central; font-size: 11px; }
+    
+    @keyframes pulse-highlight {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .animate-pulse-unit { animation: pulse-highlight 2s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-[#f2f0eb] text-[#191510] font-sans antialiased selection:bg-[#D2510A] selection:text-white">
+
+  <!-- Navigation -->
+  <header class="border-b border-[#E4DFD4] bg-[#f2f0eb]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#D2510A] rounded-xl flex items-center justify-center font-black text-white text-xl font-heading shadow-sm">SG</div>
+        <div>
+          <h1 class="font-bold text-lg text-[#191510] leading-tight font-heading">{{custom_values.facility_name}}</h1>
+          <p class="text-xs text-[#D2510A] font-semibold">● 24/7 Automated Move-In Facility</p>
+        </div>
+      </div>
+      <a href="tel:{{custom_values.facility_phone}}" class="hidden sm:flex items-center gap-2 text-xs font-bold bg-white hover:bg-[#f8f7f4] text-[#191510] px-4 py-2 rounded-xl border border-[#E4DFD4] transition">
+        📞 {{custom_values.facility_phone}}
+      </a>
+    </div>
+  </header>
+
+  <!-- Progress Bar (5 Steps) -->
+  <div class="bg-white border-b border-[#E4DFD4] py-3">
+    <div class="max-w-4xl mx-auto px-4 flex items-center justify-between text-xs font-bold">
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A] text-white flex items-center justify-center font-black">1</span>
+        <span>Select Unit</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#E4DFD4]"></div>
+      <div class="flex items-center gap-2 text-[#5C5346]/60">
+        <span class="w-6 h-6 rounded-full bg-[#f2f0eb] text-[#5C5346] flex items-center justify-center border border-[#E4DFD4]">2</span>
+        <span class="hidden md:inline">Verify ID</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#E4DFD4]"></div>
+      <div class="flex items-center gap-2 text-[#5C5346]/60">
+        <span class="w-6 h-6 rounded-full bg-[#f2f0eb] text-[#5C5346] flex items-center justify-center border border-[#E4DFD4]">3</span>
+        <span class="hidden md:inline">Sign Lease</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#E4DFD4]"></div>
+      <div class="flex items-center gap-2 text-[#5C5346]/60">
+        <span class="w-6 h-6 rounded-full bg-[#f2f0eb] text-[#5C5346] flex items-center justify-center border border-[#E4DFD4]">4</span>
+        <span class="hidden md:inline">Payment</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#E4DFD4]"></div>
+      <div class="flex items-center gap-2 text-[#5C5346]/60">
+        <span class="w-6 h-6 rounded-full bg-[#f2f0eb] text-[#5C5346] flex items-center justify-center border border-[#E4DFD4]">5</span>
+        <span class="hidden md:inline">Get Code</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="max-w-5xl mx-auto px-4 pt-8 pb-3 text-center">
+    <span class="text-[11px] font-bold uppercase tracking-widest text-[#D2510A] bg-[#D2510A]/10 px-3 py-1 rounded-full border border-[#D2510A]/20">Live Facility Availability Map</span>
+    <h2 class="text-3xl md:text-5xl font-black text-[#191510] mt-3 tracking-tight font-heading">Pick Your Unit & Move In in 2 Minutes</h2>
+    <p class="text-[#5C5346] mt-2 text-sm md:text-base max-w-2xl mx-auto">Click any available green unit on the interactive floorplan below to review dimensions, pricing, and reserve immediately.</p>
+  </section>
+
+  <!-- Interactive 2D Floorplan Section (Embedded Directly - No iframe dependencies) -->
+  <section class="max-w-5xl mx-auto px-4 pb-12">
+    
+    <div class="bg-white rounded-3xl p-5 md:p-7 border border-[#E4DFD4] shadow-sm mt-4">
+      
+      <!-- Top Map Controls & Legend -->
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between pb-5 border-b border-[#E4DFD4] gap-4">
+        <div>
+          <h3 class="text-lg font-bold text-[#191510] font-heading flex items-center gap-2">
+            <span>📍</span> Ground Level — Building A & B
+          </h3>
+          <p class="text-xs text-[#5C5346] mt-0.5">Green units are vacant and ready for immediate 24/7 digital key access.</p>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex items-center gap-4 text-xs font-semibold bg-[#f8f7f4] px-4 py-2.5 rounded-xl border border-[#E4DFD4] text-[#5C5346]">
+          <div class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-[#2E7D32] inline-block"></span> Available</div>
+          <div class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-[#D97706] inline-block"></span> Reserved</div>
+          <div class="flex items-center gap-1.5"><span class="w-3.5 h-3.5 rounded bg-[#D6D1C7] inline-block"></span> Occupied</div>
+        </div>
+      </div>
+
+      <!-- Size Filter Buttons -->
+      <div class="flex flex-wrap items-center gap-2 my-4">
+        <span class="text-xs font-bold text-[#5C5346] uppercase tracking-wider mr-2">Filter Size:</span>
+        <button onclick="filterUnits('all')" id="btn-all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#D2510A] text-white transition shadow-sm">All Units (12)</button>
+        <button onclick="filterUnits('5x5')" id="btn-5x5" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#f8f7f4] text-[#5C5346] hover:bg-[#E4DFD4] transition border border-[#E4DFD4]">5x5 Small ($75/mo)</button>
+        <button onclick="filterUnits('10x10')" id="btn-10x10" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#f8f7f4] text-[#5C5346] hover:bg-[#E4DFD4] transition border border-[#E4DFD4]">10x10 Climate ($145/mo)</button>
+        <button onclick="filterUnits('10x20')" id="btn-10x20" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-bold bg-[#f8f7f4] text-[#5C5346] hover:bg-[#E4DFD4] transition border border-[#E4DFD4]">10x20 Drive-Up ($220/mo)</button>
+      </div>
+
+      <!-- 2D Interactive SVG Layout -->
+      <div class="relative bg-[#f8f7f4] rounded-2xl p-4 md:p-6 border border-[#E4DFD4] overflow-x-auto shadow-inner">
+        <svg id="storageMap" viewBox="0 0 800 450" class="w-full h-auto min-w-[650px] select-none">
+          
+          <!-- Outer Facility Wall -->
+          <rect x="10" y="10" width="780" height="430" rx="12" fill="#f2f0eb" stroke="#D6D1C7" stroke-width="2" />
+          
+          <!-- Driveway & Main Gate -->
+          <rect x="20" y="195" width="65" height="60" rx="8" fill="#E4DFD4" stroke="#BAAF9F" stroke-dasharray="4" />
+          <text x="52" y="225" fill="#5C5346" font-size="10" font-weight="800" text-anchor="middle" dominant-baseline="central">MAIN GATE</text>
+
+          <!-- Elevator & Office Lobby -->
+          <rect x="705" y="195" width="75" height="60" rx="8" fill="#E4DFD4" stroke="#BAAF9F" />
+          <text x="742" y="225" fill="#5C5346" font-size="10" font-weight="800" text-anchor="middle" dominant-baseline="central">ELEVATOR</text>
+
+          <!-- Central Hallway Corridor -->
+          <rect x="95" y="205" width="600" height="40" rx="4" fill="#e5dfd5" />
+          <text x="395" y="225" fill="#8C827A" font-size="11" font-weight="800" text-anchor="middle" letter-spacing="4">◄ CENTRAL ACCESS CORRIDOR ►</text>
+
+          <!-- ================= ROW A (TOP) ================= -->
+          
+          <!-- Unit A-101 (10x10, Vacant, $145) -->
+          <g class="unit-group unit-size-10x10 cursor-pointer" onclick="selectUnit('A-101', '10x10 Climate Controlled', 145, 'vacant')">
+            <rect id="rect-A-101" class="unit-vacant" x="30" y="30" width="90" height="80" rx="8" />
+            <text class="unit-text" x="75" y="65">A-101</text>
+            <text class="unit-text" x="75" y="85" font-size="9" fill="#E8F5E9">$145/mo</text>
+          </g>
+
+          <!-- Unit A-102 (10x10, Rented, $145) -->
+          <g class="unit-group unit-size-10x10" onclick="selectUnit('A-102', '10x10 Climate Controlled', 145, 'rented')">
+            <rect id="rect-A-102" class="unit-rented" x="130" y="30" width="90" height="80" rx="8" />
+            <text class="unit-text-dark" x="175" y="65">A-102</text>
+            <text class="unit-text-dark" x="175" y="85" font-size="9" fill="#8C827A">OCCUPIED</text>
+          </g>
+
+          <!-- Unit A-103 (10x20, Vacant, $220) -->
+          <g class="unit-group unit-size-10x20 cursor-pointer" onclick="selectUnit('A-103', '10x20 Drive-Up', 220, 'vacant')">
+            <rect id="rect-A-103" class="unit-vacant" x="230" y="30" width="130" height="80" rx="8" />
+            <text class="unit-text" x="295" y="65">A-103 (10x20)</text>
+            <text class="unit-text" x="295" y="85" font-size="9" fill="#E8F5E9">$220/mo</text>
+          </g>
+
+          <!-- Unit A-104 (10x10, Reserved, $145) -->
+          <g class="unit-group unit-size-10x10" onclick="selectUnit('A-104', '10x10 Climate Controlled', 145, 'reserved')">
+            <rect id="rect-A-104" class="unit-reserved" x="370" y="30" width="90" height="80" rx="8" />
+            <text class="unit-text" x="415" y="65">A-104</text>
+            <text class="unit-text" x="415" y="85" font-size="9" fill="#FEF3C7">ON HOLD</text>
+          </g>
+
+          <!-- Unit A-105 (10x10, Vacant, $145) -->
+          <g class="unit-group unit-size-10x10 cursor-pointer" onclick="selectUnit('A-105', '10x10 Climate Controlled', 145, 'vacant')">
+            <rect id="rect-A-105" class="unit-vacant" x="470" y="30" width="90" height="80" rx="8" />
+            <text class="unit-text" x="515" y="65">A-105</text>
+            <text class="unit-text" x="515" y="85" font-size="9" fill="#E8F5E9">$145/mo</text>
+          </g>
+
+          <!-- Unit A-106 (10x20, Vacant, $220) -->
+          <g class="unit-group unit-size-10x20 cursor-pointer" onclick="selectUnit('A-106', '10x20 Drive-Up', 220, 'vacant')">
+            <rect id="rect-A-106" class="unit-vacant" x="570" y="30" width="130" height="80" rx="8" />
+            <text class="unit-text" x="635" y="65">A-106 (10x20)</text>
+            <text class="unit-text" x="635" y="85" font-size="9" fill="#E8F5E9">$220/mo</text>
+          </g>
+
+          <!-- ================= ROW B (BOTTOM) ================= -->
+          
+          <!-- Unit B-101 (5x5, Vacant, $75) -->
+          <g class="unit-group unit-size-5x5 cursor-pointer" onclick="selectUnit('B-101', '5x5 Standard', 75, 'vacant')">
+            <rect id="rect-B-101" class="unit-vacant" x="30" y="270" width="70" height="75" rx="8" />
+            <text class="unit-text" x="65" y="300">B-101</text>
+            <text class="unit-text" x="65" y="320" font-size="8" fill="#E8F5E9">$75/mo</text>
+          </g>
+
+          <!-- Unit B-102 (5x5, Vacant, $75) -->
+          <g class="unit-group unit-size-5x5 cursor-pointer" onclick="selectUnit('B-102', '5x5 Standard', 75, 'vacant')">
+            <rect id="rect-B-102" class="unit-vacant" x="110" y="270" width="70" height="75" rx="8" />
+            <text class="unit-text" x="145" y="300">B-102</text>
+            <text class="unit-text" x="145" y="320" font-size="8" fill="#E8F5E9">$75/mo</text>
+          </g>
+
+          <!-- Unit B-103 (10x10, Rented, $145) -->
+          <g class="unit-group unit-size-10x10" onclick="selectUnit('B-103', '10x10 Climate Controlled', 145, 'rented')">
+            <rect id="rect-B-103" class="unit-rented" x="190" y="270" width="90" height="75" rx="8" />
+            <text class="unit-text-dark" x="235" y="300">B-103</text>
+            <text class="unit-text-dark" x="235" y="320" font-size="8" fill="#8C827A">OCCUPIED</text>
+          </g>
+
+          <!-- Unit B-104 (10x10, Vacant, $145) -->
+          <g class="unit-group unit-size-10x10 cursor-pointer" onclick="selectUnit('B-104', '10x10 Climate Controlled', 145, 'vacant')">
+            <rect id="rect-B-104" class="unit-vacant" x="290" y="270" width="90" height="75" rx="8" />
+            <text class="unit-text" x="335" y="300">B-104</text>
+            <text class="unit-text" x="335" y="320" font-size="8" fill="#E8F5E9">$145/mo</text>
+          </g>
+
+          <!-- Unit B-105 (10x20, Rented, $220) -->
+          <g class="unit-group unit-size-10x20" onclick="selectUnit('B-105', '10x20 Drive-Up', 220, 'rented')">
+            <rect id="rect-B-105" class="unit-rented" x="390" y="270" width="130" height="75" rx="8" />
+            <text class="unit-text-dark" x="455" y="300">B-105</text>
+            <text class="unit-text-dark" x="455" y="320" font-size="8" fill="#8C827A">OCCUPIED</text>
+          </g>
+
+          <!-- Unit B-106 (10x10, Vacant, $145) -->
+          <g class="unit-group unit-size-10x10 cursor-pointer" onclick="selectUnit('B-106', '10x10 Climate Controlled', 145, 'vacant')">
+            <rect id="rect-B-106" class="unit-vacant" x="530" y="270" width="90" height="75" rx="8" />
+            <text class="unit-text" x="575" y="300">B-106</text>
+            <text class="unit-text" x="575" y="320" font-size="8" fill="#E8F5E9">$145/mo</text>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Interactive Unit Selection Action Drawer -->
+      <div id="selectionDrawer" class="hidden mt-6 bg-[#f8f7f4] border-2 border-[#D2510A] rounded-2xl p-5 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-300">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 bg-[#D2510A] text-white rounded-2xl flex items-center justify-center font-black text-xl font-heading shadow-md">
+            <span id="displayUnitId">A-101</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h4 id="displayUnitSize" class="text-base font-bold text-[#191510] font-heading">10x10 Climate Controlled</h4>
+              <span class="text-[10px] font-bold bg-[#2E7D32]/10 text-[#2E7D32] px-2 py-0.5 rounded border border-[#2E7D32]/30">Available Today</span>
+            </div>
+            <p id="displayUnitDesc" class="text-xs text-[#5C5346] mt-0.5">Fits 2 full bedrooms, sofa set, appliances & ~40 boxes.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 w-full md:w-auto justify-between md:justify-end">
+          <div class="text-right">
+            <span class="text-xs text-[#5C5346] block font-medium">Monthly Rate</span>
+            <span id="displayPrice" class="text-2xl font-black text-[#D2510A] font-heading">$145<span class="text-xs text-[#5C5346] font-normal">/mo</span></span>
+          </div>
+          <button onclick="proceedToCheckout()" class="bg-[#D2510A] hover:bg-[#b84406] text-white font-bold px-7 py-3.5 rounded-2xl shadow-md shadow-[#D2510A]/20 transition transform active:scale-95 flex items-center gap-2 text-sm font-heading">
+            Reserve & Move In ➔
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Trust Badges -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+      <div class="bg-white p-5 rounded-2xl border border-[#E4DFD4] text-center shadow-sm">
+        <span class="text-2xl block">🔒</span>
+        <h4 class="font-bold text-sm text-[#191510] font-heading mt-2">Smart Lock Access</h4>
+        <p class="text-xs text-[#5C5346] mt-1">Unique 6-digit PIN on phone</p>
+      </div>
+      <div class="bg-white p-5 rounded-2xl border border-[#E4DFD4] text-center shadow-sm">
+        <span class="text-2xl block">❄️</span>
+        <h4 class="font-bold text-sm text-[#191510] font-heading mt-2">Climate Controlled</h4>
+        <p class="text-xs text-[#5C5346] mt-1">Regulated 68-74°F year-round</p>
+      </div>
+      <div class="bg-white p-5 rounded-2xl border border-[#E4DFD4] text-center shadow-sm">
+        <span class="text-2xl block">📹</span>
+        <h4 class="font-bold text-sm text-[#191510] font-heading mt-2">4K 24/7 Surveillance</h4>
+        <p class="text-xs text-[#5C5346] mt-1">Full HD motion tracking</p>
+      </div>
+      <div class="bg-white p-5 rounded-2xl border border-[#E4DFD4] text-center shadow-sm">
+        <span class="text-2xl block">🚫</span>
+        <h4 class="font-bold text-sm text-[#191510] font-heading mt-2">No Hidden Fees</h4>
+        <p class="text-xs text-[#5C5346] mt-1">Month-to-month flexibility</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Logic -->
+  <script>
+    let selectedUnitData = null;
+
+    const unitDescriptions = {
+      '5x5 Standard': 'Walk-in closet size (25 sq ft) - Fits boxes, small furniture & gear.',
+      '10x10 Climate Controlled': 'Fits 2 full bedrooms, sofa set, appliances & ~40 boxes.',
+      '10x20 Drive-Up': 'Single-car garage size (200 sq ft) - Fits vehicle or full 3-4 bedroom home.'
+    };
+
+    function selectUnit(id, size, price, status) {
+      if (status !== 'vacant') {
+        alert(`Unit ${id} is currently ${status === 'rented' ? 'Occupied' : 'On Hold'}. Please select an available green unit.`);
+        return;
+      }
+
+      // Reset previous highlights
+      document.querySelectorAll('rect').forEach(el => el.classList.remove('unit-selected'));
+
+      // Highlight selected
+      const currentRect = document.getElementById(`rect-${id}`);
+      if (currentRect) currentRect.classList.add('unit-selected');
+
+      // Update Drawer Info
+      selectedUnitData = { id, size, price };
+      document.getElementById('displayUnitId').innerText = id;
+      document.getElementById('displayUnitSize').innerText = size;
+      document.getElementById('displayUnitDesc').innerText = unitDescriptions[size] || 'Standard clean storage space with digital lock.';
+      document.getElementById('displayPrice').innerHTML = `$${price}<span class="text-xs text-[#5C5346] font-normal">/mo</span>`;
+      
+      const drawer = document.getElementById('selectionDrawer');
+      drawer.classList.remove('hidden');
+      drawer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function proceedToCheckout() {
+      if (!selectedUnitData) return;
+      const isLocalFile = window.location.protocol === 'file:';
+      const targetPath = isLocalFile ? 'step2_verify_identity.html' : '/verify-identity';
+      const nextStepUrl = `${targetPath}?unit=${encodeURIComponent(selectedUnitData.id)}&size=${encodeURIComponent(selectedUnitData.size)}&price=${selectedUnitData.price}`;
+      window.location.href = nextStepUrl;
+    }
+
+    function filterUnits(sizeFilter) {
+      // Update filter button styling
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('bg-[#D2510A]', 'text-white');
+        btn.classList.add('bg-[#f8f7f4]', 'text-[#5C5346]');
+      });
+      document.getElementById(`btn-${sizeFilter}`).classList.remove('bg-[#f8f7f4]', 'text-[#5C5346]');
+      document.getElementById(`btn-${sizeFilter}`).classList.add('bg-[#D2510A]', 'text-white');
+
+      // Filter map unit opacity
+      document.querySelectorAll('.unit-group').forEach(group => {
+        if (sizeFilter === 'all' || group.classList.contains(`unit-size-${sizeFilter}`)) {
+          group.style.opacity = '1';
+          group.style.pointerEvents = 'auto';
+        } else {
+          group.style.opacity = '0.2';
+          group.style.pointerEvents = 'none';
+        }
+      });
+    }
+
+    // Auto-select Unit A-101 on initial load for instant preview
+    window.addEventListener('DOMContentLoaded', () => {
+      selectUnit('A-101', '10x10 Climate Controlled', 145, 'vacant');
+      
+      // Fallback for local browser preview outside GHL
+      if (document.body.innerHTML.includes('{{custom_values.')) {
+        document.body.innerHTML = document.body.innerHTML
+          .replace(/\{\{custom_values\.facility_name\}\}/g, 'StoreGuard Smart Storage')
+          .replace(/\{\{custom_values\.facility_phone\}\}/g, '(800) 555-0199');
+        selectUnit('A-101', '10x10 Climate Controlled', 145, 'vacant');
+      }
+    });
+  </script>
+
+</body>
+</html>

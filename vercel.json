@@ -1,0 +1,14 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "routes": [
+    { "src": "/demo", "dest": "/demo.html" },
+    { "src": "/select-unit", "dest": "/select-unit.html" },
+    { "src": "/verify-identity", "dest": "/verify-identity.html" },
+    { "src": "/sign-lease", "dest": "/sign-lease.html" },
+    { "src": "/checkout", "dest": "/checkout.html" },
+    { "src": "/portal", "dest": "/portal.html" },
+    { "src": "/welcome", "dest": "/welcome.html" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ]
+}

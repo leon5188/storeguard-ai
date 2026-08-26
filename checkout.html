@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Step 4: Secure Payment & Move-In | StoreGuard Smart Storage</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Stripe 官方 SDK -->
+  <script src="https://js.stripe.com/v3/"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f2f0eb; color: #191510; }
+    h1, h2, h3, h4, .font-heading { font-family: 'IBM Plex Sans', sans-serif; }
+    
+    /* Stripe Elements 自定义样式 */
+    .StripeElement {
+      background-color: #f8f7f4;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #E4DFD4;
+      transition: all 0.2s ease;
+    }
+    .StripeElement--focus {
+      border-color: #D2510A;
+      background-color: #ffffff;
+      box-shadow: 0 0 0 1px #D2510A;
+    }
+    .StripeElement--invalid {
+      border-color: #dc2626;
+    }
+  </style>
+</head>
+<body class="bg-[#f2f0eb] text-[#191510] font-sans antialiased selection:bg-[#D2510A] selection:text-white">
+
+  <!-- Navigation -->
+  <header class="border-b border-[#E4DFD4] bg-[#f2f0eb]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#D2510A] rounded-xl flex items-center justify-center font-black text-white text-xl font-heading shadow-sm">SG</div>
+        <div>
+          <h1 class="font-bold text-lg text-[#191510] leading-tight font-heading">{{custom_values.facility_name}}</h1>
+          <p class="text-xs text-[#D2510A] font-semibold">● 24/7 Automated Move-In Facility</p>
+        </div>
+      </div>
+      <span class="text-xs font-bold bg-[#D2510A]/10 text-[#D2510A] px-3 py-1.5 rounded-xl border border-[#D2510A]/20 flex items-center gap-1.5">
+        🔒 Stripe Certified Level 1 PCI-DSS
+      </span>
+    </div>
+  </header>
+
+  <!-- Progress Bar (5 Steps) -->
+  <div class="bg-white border-b border-[#E4DFD4] py-3">
+    <div class="max-w-4xl mx-auto px-4 flex items-center justify-between text-xs font-bold">
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30">✓</span>
+        <span class="hidden md:inline">Select Unit</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#D2510A]"></div>
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30">✓</span>
+        <span class="hidden md:inline">Verify ID</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#D2510A]"></div>
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A]/15 text-[#D2510A] flex items-center justify-center font-bold border border-[#D2510A]/30">✓</span>
+        <span class="hidden md:inline">Sign Lease</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#D2510A]"></div>
+      <div class="flex items-center gap-2 text-[#D2510A]">
+        <span class="w-6 h-6 rounded-full bg-[#D2510A] text-white flex items-center justify-center font-black">4</span>
+        <span>Payment</span>
+      </div>
+      <div class="w-8 md:w-16 h-0.5 bg-[#E4DFD4]"></div>
+      <div class="flex items-center gap-2 text-[#5C5346]/60">
+        <span class="w-6 h-6 rounded-full bg-[#f2f0eb] text-[#5C5346] flex items-center justify-center border border-[#E4DFD4]">5</span>
+        <span class="hidden md:inline">Get Code</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Container -->
+  <main class="max-w-5xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- Left Column: Order Summary (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        <div class="bg-white border border-[#E4DFD4] rounded-3xl p-6 shadow-sm">
+          <h3 class="text-lg font-black text-[#191510] border-b border-[#E4DFD4] pb-3 font-heading">Order Summary</h3>
+          
+          <div class="space-y-4 my-4 text-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-bold text-[#191510] font-heading" id="orderUnitTitle">Unit A-101</p>
+                <p class="text-xs text-[#5C5346]" id="orderUnitSize">10x10 Climate Controlled</p>
+              </div>
+              <span class="font-black text-[#191510] font-heading" id="orderRentPrice">$145.00</span>
+            </div>
+
+            <div class="flex items-center justify-between text-[#5C5346]">
+              <div>
+                <p class="font-semibold text-[#191510]">Refundable Security Deposit</p>
+                <p class="text-[11px] text-[#5C5346]">Returned upon clean move-out</p>
+              </div>
+              <span class="font-bold text-[#191510]">$100.00</span>
+            </div>
+
+            <!-- Optional Insurance Bump -->
+            <div class="bg-[#f8f7f4] p-3.5 rounded-xl border border-[#E4DFD4] flex items-start gap-3">
+              <input type="checkbox" id="insuranceCheck" checked onchange="recalculateTotal()" class="mt-1 w-4 h-4 rounded bg-white border-[#E4DFD4] text-[#D2510A] focus:ring-[#D2510A] cursor-pointer" />
+              <div class="flex-1">
+                <label for="insuranceCheck" class="text-xs font-bold text-[#191510] cursor-pointer block">Tenant Protection Plan ($5k Coverage)</label>
+                <p class="text-[11px] text-[#5C5346] mt-0.5">Protects stored items from water, burglary & fire.</p>
+              </div>
+              <span class="text-xs font-bold text-[#D2510A]">+$15/mo</span>
+            </div>
+          </div>
+
+          <div class="border-t border-[#E4DFD4] pt-4 flex items-center justify-between">
+            <span class="text-base font-bold text-[#191510] font-heading">Total Due Today</span>
+            <span class="text-2xl font-black text-[#D2510A] font-heading" id="totalDueDisplay">$260.00</span>
+          </div>
+          <p class="text-[11px] text-[#5C5346] mt-2 text-right">Auto-renewing monthly on the 1st: <span id="recurringRateDisplay" class="font-bold text-[#191510]">$160.00/mo</span></p>
+        </div>
+
+        <div class="bg-white border border-[#E4DFD4] rounded-2xl p-5 text-xs text-[#5C5346] space-y-2 shadow-sm">
+          <p class="flex items-center gap-2 text-[#191510] font-bold"><span class="text-[#D2510A]">✓</span> Instant Smart Lock Provisioning</p>
+          <p>Once payment clears, our IoT Gateway will instantly program your assigned lock and deliver your 6-digit PIN via SMS.</p>
+        </div>
+      </div>
+
+      <!-- Right Column: Real Stripe Payment Form (7 Cols) -->
+      <div class="lg:col-span-7">
+        <div class="bg-white border border-[#E4DFD4] rounded-3xl p-6 md:p-8 shadow-sm">
+          
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-2xl font-black text-[#191510] tracking-tight font-heading">Payment Information</h2>
+              <p class="text-xs text-[#5C5346] mt-0.5">Processed securely through Stripe.</p>
+            </div>
+            <!-- Mode indicator -->
+            <span id="modeBadge" class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+              Live Ready / Demo Active
+            </span>
+          </div>
+
+          <!-- Express Checkout (Apple Pay / Google Pay container via Stripe) -->
+          <div id="payment-request-button" class="mb-4">
+            <!-- Stripe Payment Request Button will mount here if device supports Apple/Google Pay -->
+          </div>
+
+          <!-- Payment Form -->
+          <form id="payment-form" onsubmit="handlePaymentSubmit(event)" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-[#5C5346] uppercase tracking-wider mb-2">Cardholder Name *</label>
+              <input type="text" id="cardholder-name" required placeholder="Jane Doe" class="w-full bg-[#f8f7f4] border border-[#E4DFD4] rounded-xl px-4 py-3 text-[#191510] text-sm focus:outline-none focus:border-[#D2510A] focus:bg-white transition" />
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#5C5346] uppercase tracking-wider mb-2">Credit or Debit Card *</label>
+              <!-- Stripe Card Element Mount Target -->
+              <div id="card-element" class="StripeElement">
+                <!-- A Stripe Element will be inserted here if API Key is supplied -->
+                <div id="fallback-card-inputs" class="space-y-3">
+                  <input type="text" id="mock-card-num" placeholder="4242 •••• •••• 4242" class="w-full bg-transparent text-sm focus:outline-none font-mono" maxlength="19" />
+                  <div class="flex gap-4 pt-2 border-t border-[#E4DFD4]">
+                    <input type="text" id="mock-card-exp" placeholder="MM / YY" class="w-1/2 bg-transparent text-xs focus:outline-none font-mono" maxlength="5" />
+                    <input type="text" id="mock-card-cvc" placeholder="CVC" class="w-1/2 bg-transparent text-xs focus:outline-none font-mono" maxlength="4" />
+                  </div>
+                </div>
+              </div>
+              <div id="card-errors" role="alert" class="text-xs text-red-500 mt-2 font-semibold"></div>
+            </div>
+
+            <div class="pt-3">
+              <button type="submit" id="submit-btn" class="w-full bg-[#D2510A] hover:bg-[#b84406] text-white font-bold py-4 rounded-2xl text-base shadow-md transition transform active:scale-[0.99] flex items-center justify-center gap-2 font-heading">
+                🔒 Pay & Activate Smart Gate PIN ➔
+              </button>
+              <p class="text-center text-[#5C5346] text-[11px] mt-3">
+                By confirming, you authorize recurring monthly charges on the 1st of each month until notice of cancellation is given.
+              </p>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const unit = params.get('unit') || 'A-101';
+    const size = params.get('size') || '10x10 Climate Controlled';
+    const rentPrice = parseFloat(params.get('price') || '145');
+    const depositPrice = 100.00;
+    const insurancePrice = 15.00;
+
+    document.getElementById('orderUnitTitle').innerText = `Unit ${unit}`;
+    document.getElementById('orderUnitSize').innerText = size;
+    document.getElementById('orderRentPrice').innerText = `$${rentPrice.toFixed(2)}`;
+
+    function recalculateTotal() {
+      const hasInsurance = document.getElementById('insuranceCheck').checked;
+      const totalToday = rentPrice + depositPrice + (hasInsurance ? insurancePrice : 0);
+      const monthlyRate = rentPrice + (hasInsurance ? insurancePrice : 0);
+
+      document.getElementById('totalDueDisplay').innerText = `$${totalToday.toFixed(2)}`;
+      document.getElementById('recurringRateDisplay').innerText = `$${monthlyRate.toFixed(2)}/mo`;
+    }
+    recalculateTotal();
+
+    // ==========================================
+    // 💳 STRIPE.JS 真实集成逻辑
+    // ==========================================
+    // 如果你在 URL 中传入 ?stripe_pk=pk_test_... 或在下方设置你的真实公钥，它将激活真实 Stripe 支付网关
+    const STRIPE_PUBLIC_KEY = params.get('stripe_pk') || ''; // 例如: 'pk_test_51...'
+    
+    let stripe = null;
+    let cardElement = null;
+
+    if (STRIPE_PUBLIC_KEY && STRIPE_PUBLIC_KEY.startsWith('pk_')) {
+      document.getElementById('modeBadge').innerText = '⚡ Real Stripe Active';
+      document.getElementById('modeBadge').className = 'text-[10px] font-bold px-2.5 py-1 rounded-full bg-[#D2510A]/10 text-[#D2510A] border border-[#D2510A]/30';
+      
+      // 清空 fallback 输入框，加载真实 Stripe 控件
+      document.getElementById('fallback-card-inputs').remove();
+      stripe = Stripe(STRIPE_PUBLIC_KEY);
+      const elements = stripe.elements();
+
+      cardElement = elements.create('card', {
+        style: {
+          base: {
+            color: '#191510',
+            fontFamily: 'Inter, sans-serif',
+            fontSize: '14px',
+            '::placeholder': { color: '#8C827A' },
+          },
+          invalid: { color: '#dc2626' }
+        }
+      });
+      cardElement.mount('#card-element');
+
+      cardElement.on('change', (event) => {
+        const displayError = document.getElementById('card-errors');
+        displayError.textContent = event.error ? event.error.message : '';
+      });
+    }
+
+    async function handlePaymentSubmit(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submit-btn');
+      submitBtn.innerText = '⚡ Charging & Programming Smart Lock...';
+      submitBtn.disabled = true;
+
+      // 如果启用了真实 Stripe
+      if (stripe && cardElement) {
+        const name = document.getElementById('cardholder-name').value;
+        const { paymentMethod, error } = await stripe.createPaymentMethod({
+          type: 'card',
+          card: cardElement,
+          billing_details: { name: name }
+        });
+
+        if (error) {
+          document.getElementById('card-errors').textContent = error.message;
+          submitBtn.innerText = '🔒 Pay & Activate Smart Gate PIN ➔';
+          submitBtn.disabled = false;
+          return;
+        }
+
+        console.log('Stripe PaymentMethod Created:', paymentMethod.id);
+        // 此处可将 paymentMethod.id 发送到后端 IoT Bridge 完成正式扣款
+      }
+
+      // 扣款成功后（真实或演示）跳转至第 5 步
+      setTimeout(() => {
+        const randomPin = Math.floor(100000 + Math.random() * 900000).toString();
+        const isLocalFile = window.location.protocol === 'file:';
+        const targetPath = isLocalFile ? 'step5_welcome_portal.html' : '/welcome-portal';
+        window.location.href = `${targetPath}?unit=${encodeURIComponent(unit)}&gate=6250%23&pin=${randomPin}`;
+      }, 1200);
+    }
+  </script>
+
+</body>
+</html>

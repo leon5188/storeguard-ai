@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoreGuard AI — The #1 Autonomous Operating System for Self-Storage Facilities</title>
+  <meta name="description" content="Turn your traditional storage facility into a 24/7 unmanned cash machine. 100% self-serve 14-day free trial. Instant smart lock PIN provisioning, automated 2D floorplan move-ins, and autonomous billing.">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: IBM Plex Sans + Inter + Oswald -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f2f0eb;
+      color: #191510;
+    }
+    h1, h2, h3, h4, h5, h6, .font-heading {
+      font-family: 'IBM Plex Sans', sans-serif;
+    }
+    .font-badge {
+      font-family: 'Oswald', sans-serif;
+    }
+
+    /* Custom range slider styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #E4DFD4;
+      height: 8px;
+      border-radius: 4px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 24px;
+      width: 24px;
+      border-radius: 50%;
+      background: #D2510A;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(210, 81, 10, 0.4);
+      transition: transform 0.1s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    /* Pulse play button animation */
+    @keyframes pulse-play {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(210, 81, 10, 0.6); }
+      50% { transform: scale(1.06); box-shadow: 0 0 0 15px rgba(210, 81, 10, 0); }
+    }
+    .animate-play-btn { animation: pulse-play 2s infinite ease-in-out; }
+
+    /* Subtle pulse animations */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 15px rgba(210, 81, 10, 0.2); }
+      50% { box-shadow: 0 0 30px rgba(210, 81, 10, 0.4); }
+    }
+    .glow-orange { animation: pulse-glow 3s infinite ease-in-out; }
+  </style>
+</head>
+<body class="selection:bg-[#D2510A] selection:text-white antialiased">
+
+  <!-- =========================================================================
+       1. TOP ANNOUNCEMENT BAR
+       ========================================================================= -->
+  <div class="bg-[#191510] text-[#f2f0eb] text-xs py-2.5 px-4 text-center border-b border-[#2d2822]">
+    <div class="max-w-6xl mx-auto flex items-center justify-center gap-2 flex-wrap font-medium">
+      <span class="bg-[#D2510A] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded font-badge">100% SELF-SERVE</span>
+      <span>Start your 14-day free trial in 60 seconds. Zero phone calls. Zero setup fees.</span>
+      <a href="https://storeguard-ai.com/checking-out-page" class="text-[#D2510A] hover:underline font-bold ml-1">Claim 14-Day Free Trial ➔</a>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       2. NAVIGATION HEADER
+       ========================================================================= -->
+  <header class="sticky top-0 z-40 bg-[#f2f0eb]/90 backdrop-blur border-b border-[#E4DFD4]">
+    <div class="max-w-6xl mx-auto px-4 md:px-8 py-4 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-[#D2510A] rounded-xl flex items-center justify-center font-black text-white text-xl font-heading shadow-sm">
+          SG
+        </div>
+        <div>
+          <span class="font-black text-xl text-[#191510] tracking-tight font-heading block leading-none">StoreGuard<span class="text-[#D2510A]">.ai</span></span>
+          <span class="text-[10px] text-[#5C5346] font-semibold tracking-wider uppercase font-badge">Autonomous Storage OS</span>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-[#5C5346]">
+        <a href="#features" class="hover:text-[#D2510A] transition">Features</a>
+        <a href="#interactive-demo" class="hover:text-[#D2510A] transition">Live Demo</a>
+        <a href="#hardware" class="hover:text-[#D2510A] transition">Hardware Retrofit</a>
+        <a href="#calculator" class="hover:text-[#D2510A] transition">ROI Calculator</a>
+        <a href="#pricing" class="hover:text-[#D2510A] transition">Pricing</a>
+      </nav>
+
+      <!-- CTA Buttons -->
+      <div class="flex items-center gap-3">
+        <button onclick="openWalkthroughVideo()" class="hidden sm:flex items-center gap-1.5 text-xs font-bold bg-white hover:bg-[#f8f7f4] text-[#191510] px-4 py-2.5 rounded-xl border border-[#E4DFD4] transition">
+          <span>▶</span> Watch Video
+        </button>
+        <a href="https://storeguard-ai.com/checking-out-page" class="bg-[#D2510A] hover:bg-[#b84406] text-white text-xs md:text-sm font-bold px-5 py-2.5 rounded-xl shadow-md transition transform active:scale-95 flex items-center gap-1.5 font-heading">
+          <span>🚀</span> Start Free Trial
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       3. HERO SECTION
+       ========================================================================= -->
+  <section class="max-w-6xl mx-auto px-4 md:px-8 pt-12 md:pt-16 pb-12 text-center">
+    
+    <!-- Tag Pill -->
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-[#E4DFD4] text-[#D2510A] text-xs font-bold uppercase tracking-wider shadow-xs mb-6 font-badge">
+      <span class="w-2 h-2 rounded-full bg-[#D2510A] animate-ping inline-block"></span>
+      14-Day Free Trial • Instant Self-Activation
+    </div>
+
+    <!-- Main Headline -->
+    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#191510] tracking-tight leading-[1.1] font-heading max-w-5xl mx-auto">
+      Turn Your Storage Facility Into an <span class="underline decoration-[#D2510A] decoration-wavy decoration-2">Unattended Cash Machine.</span>
+    </h1>
+
+    <!-- Subtitle -->
+    <p class="text-base sm:text-lg md:text-xl text-[#5C5346] mt-6 max-w-3xl mx-auto font-normal leading-relaxed">
+      Capture move-ins 24/7/365 without front-desk staff. Interactive 2D floorplans, instant TTLock & gate PIN provisioning, automated Stripe billing, and statutory lien foreclosure — ready to launch in 5 minutes.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="https://storeguard-ai.com/checking-out-page?plan=growth" class="w-full sm:w-auto bg-[#D2510A] hover:bg-[#b84406] text-white font-extrabold text-base px-8 py-4 rounded-2xl shadow-xl shadow-[#D2510A]/25 transition transform active:scale-[0.99] font-heading flex items-center justify-center gap-2">
+        <span>🚀</span> Start 14-Day Free Trial Now ➔
+      </a>
+      
+      <!-- Video Walkthrough Trigger Button -->
+      <button onclick="openWalkthroughVideo()" class="w-full sm:w-auto bg-white hover:bg-[#f8f7f4] text-[#191510] font-bold text-base px-7 py-4 rounded-2xl border-2 border-[#D2510A]/30 hover:border-[#D2510A] shadow-md transition flex items-center justify-center gap-2.5 font-heading group">
+        <span class="w-7 h-7 rounded-full bg-[#D2510A] text-white flex items-center justify-center text-xs group-hover:scale-110 transition">▶</span>
+        <span>Watch Walkthrough Video (2 Min)</span>
+      </button>
+    </div>
+    <p class="text-xs text-[#5C5346] mt-3">⚡ No credit card required to start • Instant dashboard access</p>
+
+    <!-- =========================================================================
+         HERO VIDEO TEASER BANNER (Click to Play)
+         ========================================================================= -->
+    <div class="mt-12 max-w-4xl mx-auto relative cursor-pointer group" onclick="openWalkthroughVideo()">
+      <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-3xl p-2 md:p-3 border-2 border-[#E4DFD4] group-hover:border-[#D2510A] shadow-2xl transition duration-300 overflow-hidden">
+        
+        <!-- Video Preview Container / Frame -->
+        <div class="relative bg-slate-900 rounded-2xl aspect-video overflow-hidden flex items-center justify-center border border-slate-800">
+          
+          <!-- Mockup Background Visual -->
+          <div class="absolute inset-0 opacity-40 bg-cover bg-center" style="background-image: radial-gradient(#D2510A 1px, transparent 1px); background-size: 24px 24px;"></div>
+          
+          <!-- Mock Video Center Elements -->
+          <div class="relative z-10 text-center p-6 space-y-3">
+            <div class="w-20 h-20 bg-[#D2510A] text-white rounded-full flex items-center justify-center text-3xl shadow-2xl shadow-[#D2510A]/60 mx-auto animate-play-btn group-hover:scale-110 transition">
+              ▶
+            </div>
+            <div>
+              <h3 class="text-white font-extrabold text-lg md:text-2xl tracking-tight font-heading">
+                Watch StoreGuard AI in Action
+              </h3>
+              <p class="text-xs md:text-sm text-slate-300 mt-1 max-w-md mx-auto">
+                See how a midnight tenant rents a 10x10 unit and receives gate access in 87 seconds.
+              </p>
+            </div>
+            <span class="inline-block text-[11px] font-bold uppercase tracking-wider bg-white/10 text-white px-3 py-1 rounded-full border border-white/20">
+              ⏱ 2:14 Walkthrough Video
+            </span>
+          </div>
+
+          <!-- Video Badges overlay -->
+          <div class="absolute bottom-4 left-4 bg-black/80 backdrop-blur text-white text-[11px] px-3 py-1 rounded-lg border border-slate-700 font-mono">
+            ● 4K 60FPS PRODUCT TOUR
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Metric Badges -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-14 pt-8 border-t border-[#E4DFD4]">
+      <div class="text-center p-3">
+        <span class="text-2xl md:text-3xl font-black text-[#191510] font-heading block">$45,000+</span>
+        <span class="text-xs text-[#5C5346] font-medium">Avg. Annual Labor Saved</span>
+      </div>
+      <div class="text-center p-3">
+        <span class="text-2xl md:text-3xl font-black text-[#D2510A] font-heading block">&lt; 90 Secs</span>
+        <span class="text-xs text-[#5C5346] font-medium">Average Move-In Time</span>
+      </div>
+      <div class="text-center p-3">
+        <span class="text-2xl md:text-3xl font-black text-[#191510] font-heading block">+38%</span>
+        <span class="text-xs text-[#5C5346] font-medium">After-Hours Rental Lift</span>
+      </div>
+      <div class="text-center p-3">
+        <span class="text-2xl md:text-3xl font-black text-[#191510] font-heading block">99.98%</span>
+        <span class="text-xs text-[#5C5346] font-medium">Hardware Gate Uptime</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- =========================================================================
+       4. INTERACTIVE LIVE MOVE-IN SIMULATOR
+       ========================================================================= -->
+  <section id="interactive-demo" class="py-16 bg-white border-y border-[#E4DFD4]">
+    <div class="max-w-6xl mx-auto px-4 md:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <span class="text-[11px] font-bold text-[#D2510A] uppercase tracking-widest bg-[#D2510A]/10 px-3 py-1 rounded-full border border-[#D2510A]/20 font-badge">Interactive Live Demo</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[#191510] tracking-tight mt-3 font-heading">
+          Experience What Your Customers See at 11:30 PM on a Sunday
+        </h2>
+        <p class="text-sm md:text-base text-[#5C5346] mt-2">
+          Click any unit on the simulation board below to see how StoreGuard automatically assigns credentials and texts the door PIN in real-time.
+        </p>
+      </div>
+
+      <!-- Demo Container Box -->
+      <div class="bg-[#f8f7f4] border border-[#E4DFD4] rounded-3xl p-6 md:p-8 shadow-sm">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Left: 2D Mini Interactive Floorplan (7 Cols) -->
+          <div class="lg:col-span-7 bg-white rounded-2xl p-5 border border-[#E4DFD4] shadow-xs">
+            <div class="flex items-center justify-between pb-3 border-b border-[#E4DFD4] mb-4">
+              <span class="text-xs font-bold text-[#191510] font-heading">📍 Building A Interactive Layout</span>
+              <span class="text-[11px] text-[#2E7D32] bg-[#2E7D32]/10 px-2 py-0.5 rounded font-bold">● 4 Units Ready</span>
+            </div>
+
+            <!-- Mini SVG Map -->
+            <svg viewBox="0 0 500 220" class="w-full h-auto select-none rounded-xl bg-[#f2f0eb] p-2 border border-[#E4DFD4]">
+              <!-- Corridor -->
+              <rect x="20" y="95" width="460" height="30" fill="#e5dfd5" rx="3" />
+              <text x="250" y="112" fill="#8C827A" font-size="9" font-weight="800" text-anchor="middle">◄ MAIN DRIVE AISLE ►</text>
+
+              <!-- Units Top -->
+              <g onclick="triggerDemoUnit('A-101', '10x10 Climate', 145)" class="cursor-pointer">
+                <rect id="demo-A-101" x="30" y="20" width="90" height="65" rx="6" fill="#2E7D32" stroke="#1B5E20" class="transition-all hover:opacity-90" />
+                <text x="75" y="48" fill="white" font-size="10" font-weight="bold" text-anchor="middle">A-101</text>
+                <text x="75" y="64" fill="#E8F5E9" font-size="8" text-anchor="middle">$145/mo</text>
+              </g>
+
+              <g onclick="triggerDemoUnit('A-102', '10x20 Drive-Up', 220)" class="cursor-pointer">
+                <rect id="demo-A-102" x="135" y="20" width="120" height="65" rx="6" fill="#2E7D32" stroke="#1B5E20" class="transition-all hover:opacity-90" />
+                <text x="195" y="48" fill="white" font-size="10" font-weight="bold" text-anchor="middle">A-102 (10x20)</text>
+                <text x="195" y="64" fill="#E8F5E9" font-size="8" text-anchor="middle">$220/mo</text>
+              </g>
+
+              <g>
+                <rect x="270" y="20" width="90" height="65" rx="6" fill="#D6D1C7" stroke="#BAAF9F" />
+                <text x="315" y="55" fill="#5C5346" font-size="9" font-weight="bold" text-anchor="middle">A-103 (OCCUPIED)</text>
+              </g>
+
+              <g onclick="triggerDemoUnit('A-104', '5x5 Standard', 75)" class="cursor-pointer">
+                <rect id="demo-A-104" x="375" y="20" width="95" height="65" rx="6" fill="#2E7D32" stroke="#1B5E20" class="transition-all hover:opacity-90" />
+                <text x="422" y="48" fill="white" font-size="10" font-weight="bold" text-anchor="middle">A-104 (5x5)</text>
+                <text x="422" y="64" fill="#E8F5E9" font-size="8" text-anchor="middle">$75/mo</text>
+              </g>
+
+              <!-- Units Bottom -->
+              <g onclick="triggerDemoUnit('B-101', '10x10 Climate', 145)" class="cursor-pointer">
+                <rect id="demo-B-101" x="30" y="135" width="90" height="65" rx="6" fill="#2E7D32" stroke="#1B5E20" class="transition-all hover:opacity-90" />
+                <text x="75" y="163" fill="white" font-size="10" font-weight="bold" text-anchor="middle">B-101</text>
+                <text x="75" y="179" fill="#E8F5E9" font-size="8" text-anchor="middle">$145/mo</text>
+              </g>
+
+              <g>
+                <rect x="135" y="135" width="90" height="65" rx="6" fill="#D6D1C7" stroke="#BAAF9F" />
+                <text x="180" y="170" fill="#5C5346" font-size="9" font-weight="bold" text-anchor="middle">B-102 (OCCUPIED)</text>
+              </g>
+
+              <g>
+                <rect x="240" y="135" width="110" height="65" rx="6" fill="#D6D1C7" stroke="#BAAF9F" />
+                <text x="295" y="170" fill="#5C5346" font-size="9" font-weight="bold" text-anchor="middle">B-103 (OCCUPIED)</text>
+              </g>
+
+              <g>
+                <rect x="365" y="135" width="105" height="65" rx="6" fill="#D97706" stroke="#B45309" />
+                <text x="417" y="170" fill="white" font-size="9" font-weight="bold" text-anchor="middle">B-104 (ON HOLD)</text>
+              </g>
+            </svg>
+            <p class="text-[11px] text-[#5C5346] text-center mt-3 font-medium">👆 Click any green unit above to simulate an automated checkout!</p>
+          </div>
+
+          <!-- Right: Live Simulated Mobile Dispatch Terminal (5 Cols) -->
+          <div class="lg:col-span-5 bg-[#191510] text-white rounded-2xl p-5 shadow-xl border border-[#2d2822]">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <span class="text-xs font-mono text-emerald-400">● IOT ACCESS GATEWAY: ONLINE</span>
+              <span class="text-[10px] font-mono text-slate-400">Ping: 18ms</span>
+            </div>
+
+            <div class="my-4 space-y-3 font-mono text-xs">
+              <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
+                <span class="text-slate-500 block text-[10px]">CURRENT ASSIGNED UNIT</span>
+                <span class="text-base font-bold text-white" id="live-demo-unit">Unit A-101 (10x10 Climate)</span>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-slate-500 text-[10px] block">GATE PIN</span>
+                  <span class="text-lg font-black text-[#D2510A]" id="live-demo-gate">6250#</span>
+                </div>
+                <div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                  <span class="text-slate-500 text-[10px] block">UNIT LOCK PIN</span>
+                  <span class="text-lg font-black text-emerald-400" id="live-demo-pin">958431#</span>
+                </div>
+              </div>
+
+              <!-- SMS Simulation Bubble -->
+              <div class="bg-[#241e17] border border-[#D2510A]/40 p-3 rounded-xl text-[11px] text-slate-200">
+                <div class="flex items-center gap-1 text-[#D2510A] font-bold mb-1">
+                  <span>💬</span> OUTBOUND SMS DISPATCH (0.4s)
+                </div>
+                <p id="live-demo-sms">
+                  "Welcome Alex! Your lease for Unit A-101 is active. Gate PIN: 6250#, Smart Lock: 958431#. 24/7 access granted."
+                </p>
+              </div>
+            </div>
+
+            <a href="https://storeguard-ai.com/checking-out-page" class="w-full bg-[#D2510A] hover:bg-[#b84406] text-white text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 font-heading">
+              Open 14-Day Free Trial Checkout ➔
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       5. FOUR CORE AUTOMATED PILLARS
+       ========================================================================= -->
+  <section id="features" class="max-w-6xl mx-auto px-4 md:px-8 py-20">
+    
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="text-[11px] font-bold text-[#D2510A] uppercase tracking-widest bg-[#D2510A]/10 px-3 py-1 rounded-full border border-[#D2510A]/20 font-badge">Full Facility Autopilot</span>
+      <h2 class="text-3xl md:text-5xl font-extrabold text-[#191510] tracking-tight mt-3 font-heading">
+        Four Jobs Your Front Office Does. <br/>Now Running Unattended.
+      </h2>
+      <p class="text-base text-[#5C5346] mt-3">
+        Replace clunky legacy software and hourly staff overhead with a single integrated, self-healing platform.
+      </p>
+    </div>
+
+    <!-- Pillar Grid (4 Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <!-- Pillar 1: Move-In Funnel -->
+      <div class="bg-white rounded-3xl p-8 border border-[#E4DFD4] shadow-sm hover:shadow-md transition">
+        <div class="w-14 h-14 rounded-2xl bg-[#D2510A]/10 text-[#D2510A] flex items-center justify-center text-2xl mb-6">
+          📱
+        </div>
+        <span class="text-xs font-bold text-[#D2510A] tracking-wider uppercase font-badge">PILLAR 1: LEASING ENGINE</span>
+        <h3 class="text-2xl font-bold text-[#191510] mt-1 mb-3 font-heading">2-Minute Self Move-In Funnel</h3>
+        <p class="text-sm text-[#5C5346] leading-relaxed">
+          Tenants view your real-time 2D floorplan from their phones, upload their driver’s license, e-sign the statutory rental agreement on screen, and pay initial rent + refundable deposit in 90 seconds.
+        </p>
+        <ul class="mt-6 space-y-2 text-xs font-semibold text-[#191510]">
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Mobile e-KYC Identity Document Scan</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> HTML5 Fingerprint / Touchscreen e-Sign Lease</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> 1-Click Apple Pay & Google Pay Checkout</li>
+        </ul>
+      </div>
+
+      <!-- Pillar 2: IoT Access & Smart Locks -->
+      <div class="bg-white rounded-3xl p-8 border border-[#E4DFD4] shadow-sm hover:shadow-md transition">
+        <div class="w-14 h-14 rounded-2xl bg-[#D2510A]/10 text-[#D2510A] flex items-center justify-center text-2xl mb-6">
+          🔒
+        </div>
+        <span class="text-xs font-bold text-[#D2510A] tracking-wider uppercase font-badge">PILLAR 2: ACCESS CONTROL</span>
+        <h3 class="text-2xl font-bold text-[#191510] mt-1 mb-3 font-heading">Instant IoT PIN Provisioning</h3>
+        <p class="text-sm text-[#5C5346] leading-relaxed">
+          The moment Stripe clears the payment, StoreGuard’s IoT Bridge contacts your gate keypad and TTLock smart lock, burns a unique 6-digit PIN, and texts it instantly to the tenant's phone.
+        </p>
+        <ul class="mt-6 space-y-2 text-xs font-semibold text-[#191510]">
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Works with TTLock, DoorKing, PDK, Brivo & Linear</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> "Text CODE" instant rescue auto-responder</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Complete audit log of every gate and door opening</li>
+        </ul>
+      </div>
+
+      <!-- Pillar 3: Automated Dunning & Statutory Liens -->
+      <div class="bg-white rounded-3xl p-8 border border-[#E4DFD4] shadow-sm hover:shadow-md transition">
+        <div class="w-14 h-14 rounded-2xl bg-[#D2510A]/10 text-[#D2510A] flex items-center justify-center text-2xl mb-6">
+          ⚖️
+        </div>
+        <span class="text-xs font-bold text-[#D2510A] tracking-wider uppercase font-badge">PILLAR 3: REVENUE & LEGAL</span>
+        <h3 class="text-2xl font-bold text-[#191510] mt-1 mb-3 font-heading">Self-Enforcing Lien & Dunning Cascade</h3>
+        <p class="text-sm text-[#5C5346] leading-relaxed">
+          Never chase late rent again. On Day 3, late fees apply automatically. On Day 5, gate access is electronically frozen. On Day 14, overlock tasks dispatch, and Day 30 triggers statutory legal foreclosure notices.
+        </p>
+        <ul class="mt-6 space-y-2 text-xs font-semibold text-[#191510]">
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Automatic Recurring Stripe Auto-Debit on the 1st</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> "Pay-to-Unlock" 1-click SMS billing link (instant unfreeze)</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Certified mail & state storage lien notice generation</li>
+        </ul>
+      </div>
+
+      <!-- Pillar 4: 24/7 AI Receptionist -->
+      <div class="bg-white rounded-3xl p-8 border border-[#E4DFD4] shadow-sm hover:shadow-md transition">
+        <div class="w-14 h-14 rounded-2xl bg-[#D2510A]/10 text-[#D2510A] flex items-center justify-center text-2xl mb-6">
+          🤖
+        </div>
+        <span class="text-xs font-bold text-[#D2510A] tracking-wider uppercase font-badge">PILLAR 4: VOICE & SMS AI</span>
+        <h3 class="text-2xl font-bold text-[#191510] mt-1 mb-3 font-heading">24/7 Voice & SMS Conversational AI</h3>
+        <p class="text-sm text-[#5C5346] leading-relaxed">
+          When prospective tenants call or text at 8 PM asking "Do you have a 10x10 available?", StoreGuard AI answers immediately, quotes live prices, and texts them a direct booking link to close the deal.
+        </p>
+        <ul class="mt-6 space-y-2 text-xs font-semibold text-[#191510]">
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Sub-second response time with natural voice synthesis</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Automatic Missed-Call Text-Back (Captures 92% of lost leads)</li>
+          <li class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Live bidirectional calendar dispatch integration</li>
+        </ul>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- =========================================================================
+       6. INTERACTIVE ROI CALCULATOR
+       ========================================================================= -->
+  <section id="calculator" class="py-16 bg-[#f8f7f4] border-t border-[#E4DFD4]">
+    <div class="max-w-5xl mx-auto px-4 md:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-[11px] font-bold text-[#D2510A] uppercase tracking-widest bg-[#D2510A]/10 px-3 py-1 rounded-full border border-[#D2510A]/20 font-badge">ROI & Profit Engine</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[#191510] tracking-tight mt-3 font-heading">
+          Calculate Your Annual Net Profit Increase
+        </h2>
+        <p class="text-sm text-[#5C5346] mt-2">
+          Drag the sliders below to estimate labor savings and after-hours move-in revenue for your facility size.
+        </p>
+      </div>
+
+      <!-- Calculator Card -->
+      <div class="bg-white border-2 border-[#E4DFD4] rounded-3xl p-6 md:p-10 shadow-lg">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Sliders Left (6 Cols) -->
+          <div class="lg:col-span-6 space-y-6">
+            
+            <!-- Slider 1: Total Units -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-bold text-[#191510] uppercase tracking-wider">Total Storage Units</label>
+                <span id="calc-units-val" class="text-base font-black text-[#D2510A] font-heading">150 Units</span>
+              </div>
+              <input type="range" id="calc-units" min="30" max="600" step="10" value="150" oninput="updateRoiCalc()" class="w-full" />
+              <div class="flex justify-between text-[10px] text-[#5C5346] mt-1">
+                <span>30 Units (Small)</span>
+                <span>600 Units (Large)</span>
+              </div>
+            </div>
+
+            <!-- Slider 2: Current Monthly Staffing Expense -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-bold text-[#191510] uppercase tracking-wider">Monthly Front-Desk Staff Payroll</label>
+                <span id="calc-staff-val" class="text-base font-black text-[#D2510A] font-heading">$3,500/mo</span>
+              </div>
+              <input type="range" id="calc-staff" min="1000" max="10000" step="250" value="3500" oninput="updateRoiCalc()" class="w-full" />
+              <div class="flex justify-between text-[10px] text-[#5C5346] mt-1">
+                <span>$1,000/mo</span>
+                <span>$10,000/mo</span>
+              </div>
+            </div>
+
+            <!-- Slider 3: Average Unit Monthly Rent -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-bold text-[#191510] uppercase tracking-wider">Average Monthly Rent Per Unit</label>
+                <span id="calc-rent-val" class="text-base font-black text-[#D2510A] font-heading">$140/mo</span>
+              </div>
+              <input type="range" id="calc-rent" min="50" max="300" step="5" value="140" oninput="updateRoiCalc()" class="w-full" />
+              <div class="flex justify-between text-[10px] text-[#5C5346] mt-1">
+                <span>$50/mo</span>
+                <span>$300/mo</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Results Right (6 Cols) -->
+          <div class="lg:col-span-6 bg-[#191510] text-white rounded-2xl p-6 md:p-8 shadow-xl">
+            <span class="text-xs font-bold uppercase tracking-widest text-[#D2510A] block font-badge">Estimated Financial Impact</span>
+            
+            <div class="my-6 space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <span class="text-xs text-slate-300">Annual Labor Cost Eliminated:</span>
+                <span id="res-labor" class="text-base font-bold text-white font-heading">$42,000 / yr</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <span class="text-xs text-slate-300">24/7 After-Hours Move-In Lift:</span>
+                <span id="res-lift" class="text-base font-bold text-white font-heading">+$16,800 / yr</span>
+              </div>
+              <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <span class="text-xs text-slate-300">Annual StoreGuard SaaS Cost:</span>
+                <span id="res-saas" class="text-xs font-bold text-slate-400 font-mono">-$4,188 / yr</span>
+              </div>
+            </div>
+
+            <!-- Net Annual Profit -->
+            <div class="bg-[#241e17] border border-[#D2510A] p-4 rounded-xl text-center">
+              <span class="text-xs text-slate-300 uppercase tracking-wider font-semibold block">Net Annual Facility Profit Increase</span>
+              <span id="res-net" class="text-3xl md:text-4xl font-black text-[#D2510A] font-heading block mt-1">+$54,612 / yr</span>
+              <span id="res-roi" class="text-[11px] font-bold text-emerald-400 mt-1 block">▲ 13.0x Return on Investment</span>
+            </div>
+
+            <a href="https://storeguard-ai.com/checking-out-page" class="w-full block text-center mt-6 bg-[#D2510A] hover:bg-[#b84406] text-white font-bold py-3.5 rounded-xl transition text-sm font-heading shadow-md">
+              Claim Your Free Trial & Setup ➔
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       7. HARDWARE COMPATIBILITY
+       ========================================================================= -->
+  <section id="hardware" class="max-w-6xl mx-auto px-4 md:px-8 py-20">
+    <div class="text-center max-w-3xl mx-auto mb-14">
+      <span class="text-[11px] font-bold text-[#D2510A] uppercase tracking-widest bg-[#D2510A]/10 px-3 py-1 rounded-full border border-[#D2510A]/20 font-badge">Universal Compatibility</span>
+      <h2 class="text-3xl md:text-5xl font-extrabold text-[#191510] tracking-tight mt-3 font-heading">
+        Zero Proprietary Lock-In. Retrofits in Under 48 Hours.
+      </h2>
+      <p class="text-sm md:text-base text-[#5C5346] mt-3">
+        Unlike competitors that force you into $300/door proprietary locks, StoreGuard AI connects directly to open-standard IoT locks and legacy motorized gate controllers.
+      </p>
+    </div>
+
+    <!-- Hardware Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Card 1: Unit Smart Locks -->
+      <div class="bg-white rounded-2xl p-6 border border-[#E4DFD4] shadow-sm">
+        <span class="text-2xl block mb-3">🔐</span>
+        <h4 class="text-lg font-bold text-[#191510] font-heading">Individual Unit Locks</h4>
+        <p class="text-xs text-[#5C5346] mt-1 mb-4">Affordable, battery-powered smart padlocks, mortise locks & rim locks with 18-month battery life.</p>
+        <div class="flex flex-wrap gap-1.5 text-[11px] font-bold text-[#5C5346]">
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">TTLock</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">Sciener</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">Igloohome</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">Tuya Zigbee</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Gate Controllers -->
+      <div class="bg-white rounded-2xl p-6 border border-[#E4DFD4] shadow-sm">
+        <span class="text-2xl block mb-3">🚪</span>
+        <h4 class="text-lg font-bold text-[#191510] font-heading">Main Entry Gate Keypads</h4>
+        <p class="text-xs text-[#5C5346] mt-1 mb-4">Direct dry-contact relay integration with any commercial slide or swing motorized gate operator.</p>
+        <div class="flex flex-wrap gap-1.5 text-[11px] font-bold text-[#5C5346]">
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">DoorKing 1830</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">LiftMaster CAPXL</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">Linear / Nortek</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">PDK Wireless</span>
+        </div>
+      </div>
+
+      <!-- Card 3: Cloud Access Systems -->
+      <div class="bg-white rounded-2xl p-6 border border-[#E4DFD4] shadow-sm">
+        <span class="text-2xl block mb-3">☁️</span>
+        <h4 class="text-lg font-bold text-[#191510] font-heading">Cloud Access & Video</h4>
+        <p class="text-xs text-[#5C5346] mt-1 mb-4">Enterprise REST API webhooks for cloud access control and camera clip recording upon entry.</p>
+        <div class="flex flex-wrap gap-1.5 text-[11px] font-bold text-[#5C5346]">
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">Brivo OnAir</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">Verkada</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">OpenPath</span>
+          <span class="bg-[#f8f7f4] px-2.5 py-1 rounded border border-[#E4DFD4]">Kisi</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       8. COMPARISON TABLE
+       ========================================================================= -->
+  <section class="py-16 bg-white border-y border-[#E4DFD4]">
+    <div class="max-w-5xl mx-auto px-4 md:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-[11px] font-bold text-[#D2510A] uppercase tracking-widest bg-[#D2510A]/10 px-3 py-1 rounded-full border border-[#D2510A]/20 font-badge">Side-By-Side Comparison</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-[#191510] tracking-tight mt-3 font-heading">
+          Why Legacy Storage Systems Fall Short
+        </h2>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-[#E4DFD4]">
+              <th class="py-4 px-4 font-bold text-[#191510] font-heading">Capability</th>
+              <th class="py-4 px-4 font-bold text-[#5C5346]">Traditional Way (SiteLink / Staff)</th>
+              <th class="py-4 px-4 font-bold text-[#D2510A] bg-[#D2510A]/5 rounded-t-xl font-heading">StoreGuard AI Autonomous OS</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#E4DFD4] text-xs">
+            <tr>
+              <td class="py-4 px-4 font-bold text-[#191510]">Move-In Hours</td>
+              <td class="py-4 px-4 text-[#5C5346]">Office Hours Only (9am-5pm)</td>
+              <td class="py-4 px-4 font-bold text-[#D2510A] bg-[#D2510A]/5">24/7/365 Instant Digital Move-In</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-4 font-bold text-[#191510]">Labor Overhead</td>
+              <td class="py-4 px-4 text-[#5C5346]">$35,000 - $60,000+ / year per facility</td>
+              <td class="py-4 px-4 font-bold text-[#D2510A] bg-[#D2510A]/5">$0 (100% Unmanned Automation)</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-4 font-bold text-[#191510]">Smart Lock Pricing</td>
+              <td class="py-4 px-4 text-[#5C5346]">$250 - $400 / door proprietary hardware</td>
+              <td class="py-4 px-4 font-bold text-[#D2510A] bg-[#D2510A]/5">$35 - $60 open-standard IoT locks</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-4 font-bold text-[#191510]">Gate PIN Delivery</td>
+              <td class="py-4 px-4 text-[#5C5346]">Manual entry by staff or next business day</td>
+              <td class="py-4 px-4 font-bold text-[#D2510A] bg-[#D2510A]/5">&lt; 1 Second via Automated Cloud Webhook</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-4 font-bold text-[#191510]">Late Rent Lockout</td>
+              <td class="py-4 px-4 text-[#5C5346]">Manual keypad code editing on PC</td>
+              <td class="py-4 px-4 font-bold text-[#D2510A] bg-[#D2510A]/5">Automated on Day 5 (Instant unfreeze upon pay)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       9. PRICING TIERS
+       ========================================================================= -->
+  <section id="pricing" class="max-w-6xl mx-auto px-4 md:px-8 py-20">
+    <div class="text-center max-w-2xl mx-auto mb-14">
+      <span class="text-[11px] font-bold text-[#D2510A] uppercase tracking-widest bg-[#D2510A]/10 px-3 py-1 rounded-full border border-[#D2510A]/20 font-badge">Simple & Predictable</span>
+      <h2 class="text-3xl md:text-5xl font-extrabold text-[#191510] tracking-tight mt-3 font-heading">
+        Flat Monthly Pricing. 14 Days Free.
+      </h2>
+      <p class="text-sm text-[#5C5346] mt-2">
+        Keep 100% of your rental revenues. Activate in 60 seconds.
+      </p>
+    </div>
+
+    <!-- Pricing 3 Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Tier 1: Starter -->
+      <div class="bg-white rounded-3xl p-7 border border-[#E4DFD4] shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#5C5346] uppercase font-badge">STARTER PLAN</span>
+          <h3 class="text-xl font-bold text-[#191510] mt-1 font-heading">Single Facility</h3>
+          <div class="my-5">
+            <span class="text-4xl font-black text-[#191510] font-heading">$197</span>
+            <span class="text-xs text-[#5C5346]">/ month after 14-day trial</span>
+          </div>
+          <p class="text-xs text-[#5C5346] mb-6">For boutique and single-location facilities under 100 units.</p>
+          <div class="space-y-3 text-xs font-semibold text-[#191510]">
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Up to 100 Storage Units</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> 2D Interactive Floorplan Funnel</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Gate Keypad & IoT Lock Provisioning</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Automated SMS & Email Dunning</p>
+          </div>
+        </div>
+        <a href="https://storeguard-ai.com/checking-out-page?plan=starter" class="w-full block text-center mt-8 bg-[#191510] hover:bg-black text-white font-bold py-3.5 rounded-xl transition text-xs font-heading">
+          Start 14-Day Free Trial ➔
+        </a>
+      </div>
+
+      <!-- Tier 2: Growth (Highlighted) -->
+      <div class="bg-white rounded-3xl p-7 border-2 border-[#D2510A] shadow-xl relative flex flex-col justify-between glow-orange">
+        <span class="absolute -top-3.5 right-6 bg-[#D2510A] text-white text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full font-badge">
+          MOST POPULAR
+        </span>
+        <div>
+          <span class="text-xs font-bold text-[#D2510A] uppercase font-badge">GROWTH OPERATOR</span>
+          <h3 class="text-xl font-bold text-[#191510] mt-1 font-heading">Fully Autonomous</h3>
+          <div class="my-5">
+            <span class="text-4xl font-black text-[#D2510A] font-heading">$349</span>
+            <span class="text-xs text-[#5C5346]">/ month after 14-day trial</span>
+          </div>
+          <p class="text-xs text-[#5C5346] mb-6">Complete unmanned operating system for medium facilities up to 300 units.</p>
+          <div class="space-y-3 text-xs font-semibold text-[#191510]">
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Up to 300 Storage Units</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Everything in Starter</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> 24/7 Voice & SMS AI Receptionist</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> e-KYC Driver's License Real-time Verify</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Automated Statutory Lien & Foreclosure Schedulers</p>
+          </div>
+        </div>
+        <a href="https://storeguard-ai.com/checking-out-page?plan=growth" class="w-full block text-center mt-8 bg-[#D2510A] hover:bg-[#b84406] text-white font-bold py-3.5 rounded-xl transition text-xs font-heading shadow-md">
+          Start 14-Day Free Trial ➔
+        </a>
+      </div>
+
+      <!-- Tier 3: Enterprise -->
+      <div class="bg-white rounded-3xl p-7 border border-[#E4DFD4] shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#5C5346] uppercase font-badge">ENTERPRISE PORTFOLIO</span>
+          <h3 class="text-xl font-bold text-[#191510] mt-1 font-heading">Multi-Location REIT</h3>
+          <div class="my-5">
+            <span class="text-4xl font-black text-[#191510] font-heading">$599</span>
+            <span class="text-xs text-[#5C5346]">/ month after 14-day trial</span>
+          </div>
+          <p class="text-xs text-[#5C5346] mb-6">For multi-facility regional operators and REIT portfolios.</p>
+          <div class="space-y-3 text-xs font-semibold text-[#191510]">
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Unlimited Storage Units</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Multi-Location Consolidated Dashboard</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Custom Hardware Gateway Relay Engineering</p>
+            <p class="flex items-center gap-2"><span class="text-[#D2510A]">✓</span> Dedicated SLA & Priority Onboarding Team</p>
+          </div>
+        </div>
+        <a href="https://storeguard-ai.com/checking-out-page?plan=enterprise" class="w-full block text-center mt-8 bg-[#191510] hover:bg-black text-white font-bold py-3.5 rounded-xl transition text-xs font-heading">
+          Start 14-Day Free Trial ➔
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       10. SELF-SERVE FAST ACTIVATION BANNER
+       ========================================================================= -->
+  <section id="signup" class="py-16 bg-[#191510] text-white">
+    <div class="max-w-4xl mx-auto px-4 md:px-8 text-center">
+      <span class="text-xs font-bold text-[#D2510A] uppercase tracking-widest font-badge">Instant 14-Day Free Trial</span>
+      <h2 class="text-3xl md:text-5xl font-black text-white tracking-tight mt-2 font-heading">
+        Get Started in Under 60 Seconds
+      </h2>
+      <p class="text-sm md:text-base text-slate-300 mt-3 max-w-xl mx-auto">
+        Activate your 14-day free trial on our secure portal. Instant access to your dashboard, 2D floorplan configurator, and smart access gateway.
+      </p>
+
+      <div class="mt-8 max-w-md mx-auto">
+        <a href="https://storeguard-ai.com/checking-out-page" class="w-full block text-center bg-[#D2510A] hover:bg-[#b84406] text-white font-extrabold py-4 px-8 rounded-2xl text-base shadow-xl shadow-[#D2510A]/30 transition transform active:scale-95 font-heading">
+          🚀 Proceed to 14-Day Free Trial Checkout ➔
+        </a>
+        <div class="flex items-center justify-center gap-4 text-[11px] text-slate-400 text-center mt-3">
+          <span>✓ 14 Days Free</span>
+          <span>✓ Instant Access</span>
+          <span>✓ Cancel Anytime</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       11. VIDEO WALKTHROUGH POPUP MODAL (CINEMATIC LIGHTBOX)
+       ========================================================================= -->
+  <div id="video-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-[#191510] border border-[#2d2822] rounded-3xl max-w-4xl w-full p-4 md:p-6 shadow-2xl relative animate-in fade-in zoom-in duration-200">
+      
+      <!-- Close Button -->
+      <button onclick="closeWalkthroughVideo()" class="absolute -top-3 -right-3 md:top-4 md:right-4 text-white text-xl font-bold w-10 h-10 rounded-full bg-[#D2510A] flex items-center justify-center shadow-lg border-2 border-white hover:scale-110 transition z-20">
+        ✕
+      </button>
+
+      <!-- Video Header -->
+      <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-800 text-left">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-widest text-[#D2510A] bg-[#D2510A]/10 px-2 py-0.5 rounded font-badge">OFFICIAL WALKTHROUGH</span>
+          <h3 class="text-lg md:text-xl font-bold text-white font-heading mt-1">
+            StoreGuard AI 2-Minute Facility Automation Overview
+          </h3>
+        </div>
+        <span class="text-xs text-slate-400 hidden sm:inline">⏱ 2 Mins</span>
+      </div>
+
+      <!-- Video Screen Frame Container -->
+      <div class="relative bg-black rounded-2xl overflow-hidden aspect-video border border-slate-800 shadow-inner flex items-center justify-center" id="video-player-container">
+        
+        <!-- Interactive Animated Walkthrough Simulator (Fallback when no external URL is placed) -->
+        <div id="interactive-video-screen" class="w-full h-full p-6 md:p-10 flex flex-col justify-between bg-gradient-to-br from-slate-900 via-[#191510] to-slate-950 text-left text-white">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+              <span class="text-xs font-mono text-slate-400 ml-2">storeguard-ai.com/walkthrough-demo</span>
+            </div>
+            <span class="text-xs font-mono text-emerald-400">● REAL-TIME MOVE-IN WORKFLOW</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-auto py-4 text-xs font-mono">
+            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+              <span class="text-[#D2510A] font-bold block text-sm">STEP 1: 2D FLOORPLAN</span>
+              <p class="text-slate-300 text-[11px]">Tenant selects Unit A-101 ($145/mo) on mobile phone screen.</p>
+              <div class="bg-emerald-500/20 text-emerald-400 p-1.5 rounded text-[10px] text-center font-bold">✓ Unit Reserved</div>
+            </div>
+            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+              <span class="text-[#D2510A] font-bold block text-sm">STEP 2: STRIPE PAY & SIGN</span>
+              <p class="text-slate-300 text-[11px]">e-Signs statutory storage lease + 1-Click Apple Pay.</p>
+              <div class="bg-emerald-500/20 text-emerald-400 p-1.5 rounded text-[10px] text-center font-bold">✓ $260 Paid (Rent+Deposit)</div>
+            </div>
+            <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+              <span class="text-[#D2510A] font-bold block text-sm">STEP 3: IOT PIN ISSUED</span>
+              <p class="text-slate-300 text-[11px]">TTLock & DoorKing burned with 6250# in 0.4s.</p>
+              <div class="bg-emerald-500/20 text-emerald-400 p-1.5 rounded text-[10px] text-center font-bold">✓ SMS Delivered to Phone</div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between pt-3 border-t border-slate-800 text-xs">
+            <span class="text-slate-400">Ready to put this on your facility?</span>
+            <a href="https://storeguard-ai.com/checking-out-page" class="bg-[#D2510A] hover:bg-[#b84406] text-white font-bold px-4 py-2 rounded-xl text-xs font-heading">
+              Start 14-Day Free Trial Now ➔
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action bar under video -->
+      <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+        <span class="text-slate-400 text-center sm:text-left">
+          💡 You can replace this with your Loom or YouTube video by setting <code class="text-[#D2510A] bg-slate-900 px-1 py-0.5 rounded">WALKTHROUGH_VIDEO_URL</code>
+        </span>
+        <a href="https://storeguard-ai.com/checking-out-page" class="w-full sm:w-auto bg-[#D2510A] hover:bg-[#b84406] text-white font-bold px-6 py-2.5 rounded-xl font-heading transition text-center">
+          🚀 Start 14-Day Free Trial ➔
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       12. FOOTER
+       ========================================================================= -->
+  <footer class="bg-[#14110e] text-[#8C827A] border-t border-[#241e17] py-12 px-4 md:px-8 text-xs">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+      <div>
+        <div class="flex items-center justify-center md:justify-start gap-2">
+          <div class="w-7 h-7 bg-[#D2510A] text-white rounded-lg flex items-center justify-center font-black text-sm font-heading">SG</div>
+          <span class="font-bold text-white text-sm font-heading">StoreGuard.ai</span>
+        </div>
+        <p class="mt-2 text-[#5C5346]">Autonomous AI & IoT Operating System for the Modern Self-Storage Operator.</p>
+      </div>
+
+      <div class="space-y-1">
+        <p>Support: <a href="tel:{{custom_values.facility_phone}}" class="text-white hover:underline">{{custom_values.facility_phone}}</a></p>
+        <p>Email: <a href="mailto:{{custom_values.facility_support_email}}" class="text-white hover:underline">{{custom_values.facility_support_email}}</a></p>
+        <p>© 2026 StoreGuard AI Technologies Inc. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       13. JAVASCRIPT: INTERACTIONS & ROI CALCULATOR
+       ========================================================================= -->
+  <script>
+    // =========================================================================
+    // ⚙️ GLOBAL CHECKOUT TARGET
+    // =========================================================================
+    const CHECKOUT_PAGE_URL = 'https://storeguard-ai.com/checking-out-page';
+    
+    // 如果你有录好的 Loom 或 YouTube 讲解视频链接，直接填入这里：
+    const WALKTHROUGH_VIDEO_URL = ''; // 例如: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1'
+
+    // Video Modal Handlers
+    function openWalkthroughVideo() {
+      if (WALKTHROUGH_VIDEO_URL) {
+        document.getElementById('video-player-container').innerHTML = `
+          <iframe src="${WALKTHROUGH_VIDEO_URL}" class="w-full h-full border-0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        `;
+      }
+      document.getElementById('video-modal').classList.remove('hidden');
+    }
+
+    function closeWalkthroughVideo() {
+      document.getElementById('video-modal').classList.add('hidden');
+    }
+
+    window.addEventListener('keydown', (e) => { 
+      if (e.key === 'Escape') closeWalkthroughVideo();
+    });
+
+    document.getElementById('video-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'video-modal') closeWalkthroughVideo();
+    });
+
+    // 1. ROI Calculator Reactive Math
+    function updateRoiCalc() {
+      const units = parseInt(document.getElementById('calc-units').value);
+      const monthlyStaff = parseInt(document.getElementById('calc-staff').value);
+      const avgRent = parseInt(document.getElementById('calc-rent').value);
+
+      document.getElementById('calc-units-val').innerText = `${units} Units`;
+      document.getElementById('calc-staff-val').innerText = `$${monthlyStaff.toLocaleString()}/mo`;
+      document.getElementById('calc-rent-val').innerText = `$${avgRent}/mo`;
+
+      const annualLaborSaved = monthlyStaff * 12;
+      const annualLift = Math.round(units * 0.08 * avgRent * 12);
+      
+      let annualSaas = 197 * 12;
+      if (units > 100 && units <= 300) annualSaas = 349 * 12;
+      if (units > 300) annualSaas = 599 * 12;
+
+      const netProfit = annualLaborSaved + annualLift - annualSaas;
+      const roiMult = (netProfit / annualSaas).toFixed(1);
+
+      document.getElementById('res-labor').innerText = `$${annualLaborSaved.toLocaleString()} / yr`;
+      document.getElementById('res-lift').innerText = `+$${annualLift.toLocaleString()} / yr`;
+      document.getElementById('res-saas').innerText = `-$${annualSaas.toLocaleString()} / yr`;
+      document.getElementById('res-net').innerText = `+$${netProfit.toLocaleString()} / yr`;
+      document.getElementById('res-roi').innerText = `▲ ${roiMult}x Return on SaaS Investment`;
+    }
+    updateRoiCalc();
+
+    // 2. Interactive Demo Simulator
+    function triggerDemoUnit(unitId, size, price) {
+      document.getElementById('live-demo-unit').innerText = `Unit ${unitId} (${size})`;
+      const randomGate = Math.floor(1000 + Math.random() * 9000).toString() + '#';
+      const randomLock = Math.floor(100000 + Math.random() * 900000).toString() + '#';
+
+      document.getElementById('live-demo-gate').innerText = randomGate;
+      document.getElementById('live-demo-pin').innerText = randomLock;
+      document.getElementById('live-demo-sms').innerText = `"Welcome Alex! Your lease for Unit ${unitId} ($${price}/mo) is active. Gate PIN: ${randomGate}, Smart Lock: ${randomLock}. 24/7 access granted."`;
+    }
+
+    // Fallback sanitizer for local preview
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.body.innerHTML.includes('{{custom_values.')) {
+        document.body.innerHTML = document.body.innerHTML
+          .replace(/\{\{custom_values\.facility_phone\}\}/g, '(800) 555-0199')
+          .replace(/\{\{custom_values\.facility_support_email\}\}/g, 'support@storeguard-ai.com');
+      }
+    });
+  </script>
+
+</body>
+</html>

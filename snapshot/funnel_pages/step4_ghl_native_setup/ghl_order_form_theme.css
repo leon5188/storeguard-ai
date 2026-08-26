@@ -1,0 +1,156 @@
+/* ==========================================================================
+   StoreGuard AI — GHL 2-Step Order Form Custom Styling
+   Paste this into: GHL Page Editor ➔ Settings (⚙️) ➔ Custom CSS
+   ========================================================================== */
+
+/* 全局背景与字体 */
+body {
+  background-color: #f2f0eb !important;
+  font-family: 'Inter', sans-serif !important;
+  color: #191510 !important;
+}
+
+h1, h2, h3, h4, h5, h6, .heading-text {
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  color: #191510 !important;
+}
+
+/* 2-Step Order Form 整体外框 */
+.hl-app .order-form,
+.hl-app .form-container,
+.hl-2step-order,
+div[data-element-type="2step-order-form"] {
+  background-color: #ffffff !important;
+  border: 1px solid #E4DFD4 !important;
+  border-radius: 24px !important;
+  padding: 24px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 步骤指示标签 (Step 1 / Step 2 Tabs) */
+.hl-2step-order .step-nav,
+.order-form .step-indicator {
+  border-bottom: 1px solid #E4DFD4 !important;
+  margin-bottom: 20px !important;
+}
+
+.hl-2step-order .step-nav .active-step,
+.order-form .step-header.active {
+  color: #D2510A !important;
+  border-color: #D2510A !important;
+  font-weight: 700 !important;
+}
+
+/* 输入框样式 (Input Fields) */
+.hl-2step-order input[type="text"],
+.hl-2step-order input[type="email"],
+.hl-2step-order input[type="tel"],
+.hl-2step-order input[type="number"],
+.order-form .form-control {
+  background-color: #f8f7f4 !important;
+  border: 1px solid #E4DFD4 !important;
+  border-radius: 12px !important;
+  color: #191510 !important;
+  padding: 12px 16px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+.hl-2step-order input:focus,
+.order-form .form-control:focus {
+  background-color: #ffffff !important;
+  border-color: #D2510A !important;
+  box-shadow: 0 0 0 2px rgba(210, 81, 10, 0.2) !important;
+  outline: none !important;
+}
+
+/* 标签文本 (Field Labels) */
+.hl-2step-order label,
+.order-form label {
+  color: #5C5346 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  margin-bottom: 6px !important;
+}
+
+/* 核心主行动按钮 (Submit / Next Step CTA Button) */
+.hl-2step-order button.btn,
+.hl-2step-order button[type="submit"],
+.order-form .btn-primary,
+.order-form .submit-btn,
+.order-form .btn-checkout {
+  background-color: #D2510A !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  font-family: 'IBM Plex Sans', sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 16px !important;
+  padding: 16px 24px !important;
+  border-radius: 16px !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(210, 81, 10, 0.3) !important;
+  text-transform: none !important;
+  letter-spacing: 0.5px !important;
+  transition: all 0.2s ease !important;
+  width: 100% !important;
+}
+
+.hl-2step-order button.btn:hover,
+.order-form .btn-primary:hover {
+  background-color: #b84406 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(210, 81, 10, 0.4) !important;
+}
+
+/* 产品选择项与单选框 (Product Selection Items) */
+.hl-2step-order .product-item,
+.order-form .product-list-item {
+  background-color: #f8f7f4 !important;
+  border: 1px solid #E4DFD4 !important;
+  border-radius: 14px !important;
+  padding: 14px 16px !important;
+  margin-bottom: 10px !important;
+  transition: all 0.2s ease !important;
+}
+
+.hl-2step-order .product-item:hover {
+  border-color: #D2510A !important;
+}
+
+.hl-2step-order .product-item.selected {
+  border: 2px solid #D2510A !important;
+  background-color: #ffffff !important;
+}
+
+.hl-2step-order .product-cost,
+.order-form .product-price {
+  color: #D2510A !important;
+  font-weight: 800 !important;
+  font-size: 16px !important;
+}
+
+/* Order Bump 增值保险勾选框 (Order Bump Box) */
+.hl-2step-order .order-bump-container,
+.order-form .order-bump {
+  background-color: #fdfaf6 !important;
+  border: 2px dashed #D2510A !important;
+  border-radius: 16px !important;
+  padding: 16px !important;
+  margin: 16px 0 !important;
+}
+
+.hl-2step-order .order-bump-title {
+  color: #D2510A !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+}
+
+/* Stripe 信用卡区域内边距 */
+.hl-2step-order .stripe-card-element {
+  background-color: #f8f7f4 !important;
+  border: 1px solid #E4DFD4 !important;
+  border-radius: 12px !important;
+  padding: 14px !important;
+}
