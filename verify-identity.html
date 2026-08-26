@@ -136,14 +136,28 @@
         <input type="hidden" id="hiddenSize" />
         <input type="hidden" id="hiddenPrice" />
 
+        <!-- SMS Opt-In Consent & CTIA Carrier Compliance -->
+        <div class="pt-3 border-t border-[#E4DFD4] bg-[#f8f7f4] p-4 rounded-2xl border">
+          <label class="flex items-start gap-2.5 cursor-pointer">
+            <input type="checkbox" id="smsOptIn" required checked class="mt-1 w-4 h-4 text-[#D2510A] rounded border-gray-300 focus:ring-[#D2510A] accent-[#D2510A]" />
+            <span class="text-xs text-[#5C5346] leading-relaxed">
+              I agree to receive automated transactional text messages (SMS) from <strong class="text-[#191510]">{{custom_values.facility_name}} / StoreGuard AI</strong> regarding my storage unit reservation, main gate entry PIN codes, smart lock digital credentials, move-in confirmations, rent payment receipts, and customer service notices at the phone number provided above. Consent is not a condition of purchase. Message frequency varies. Msg & data rates may apply. Reply <strong>STOP</strong> to unsubscribe, <strong>HELP</strong> for support. View our <a href="/privacy" target="_blank" class="text-[#D2510A] underline font-semibold">Privacy Policy</a> and <a href="/terms" target="_blank" class="text-[#D2510A] underline font-semibold">Terms of Service</a>.
+            </span>
+          </label>
+        </div>
+
         <!-- Submit Button -->
         <div class="pt-4">
           <button type="submit" class="w-full bg-[#D2510A] hover:bg-[#b84406] text-white font-bold py-4 rounded-2xl text-base shadow-md transition transform active:scale-[0.99] flex items-center justify-center gap-2">
             Continue to Lease Agreement ➔
           </button>
-          <p class="text-center text-[#5C5346] text-xs mt-3 flex items-center justify-center gap-1.5">
-            <span>🔒</span> 256-Bit SSL Encrypted & Identity Guard Protected
-          </p>
+          <div class="flex items-center justify-center gap-3 text-xs text-[#5C5346] mt-3">
+            <span>🔒 256-Bit SSL Encrypted</span>
+            <span>•</span>
+            <a href="/privacy" target="_blank" class="hover:underline">Privacy Policy</a>
+            <span>•</span>
+            <a href="/terms" target="_blank" class="hover:underline">Terms</a>
+          </div>
         </div>
 
       </form>

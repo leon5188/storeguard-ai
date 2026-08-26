@@ -9,6 +9,8 @@
     { "src": "/checkout", "dest": "/checkout.html" },
     { "src": "/portal", "dest": "/portal.html" },
     { "src": "/welcome", "dest": "/welcome.html" },
+    { "src": "/privacy", "dest": "/privacy.html" },
+    { "src": "/terms", "dest": "/terms.html" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
