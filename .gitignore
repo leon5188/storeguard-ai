@@ -14,7 +14,12 @@ yarn-error.log*
 # Deployment & Internal Scripts
 deploy_*.js
 fix_prices.js
-bridge/
+
+# bridge/ 本身纳入版本控制（源码需要被 review 和回溯）。
+# 其中的敏感/生成内容由下列规则单独排除：
+bridge/.env
+bridge/node_modules/
+bridge/dist/
 
 # OS & Temp files
 .DS_Store
