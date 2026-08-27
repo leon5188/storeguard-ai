@@ -37,4 +37,12 @@ function startServer(port, env) {
   });
 }
 
-module.exports = { request, startServer };
+// 测试夹具。刻意写成一眼可辨的假值：命名成"看起来像真凭证"会触发密钥扫描误报，
+// 也会让人逐渐忽略真正的告警。约束：不能含 'your_'，否则服务端会判定为未配置。
+const FIXTURES = {
+  BRIDGE_SECRET: 'not-a-real-secret-test-fixture',
+  TTLOCK_CLIENT_ID: 'not-a-real-client-id-test-fixture',
+  TTLOCK_ACCESS_TOKEN: 'not-a-real-token-test-fixture'
+};
+
+module.exports = { request, startServer, FIXTURES };

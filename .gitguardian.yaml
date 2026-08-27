@@ -1,0 +1,7 @@
+version: 2
+
+secret:
+  # 测试夹具集中在 test_helpers.js 的 FIXTURES 中，值本身写成一眼可辨的假串
+  # （not-a-real-*-test-fixture）。此处不做整目录忽略：bridge/ 下仍需全量扫描，
+  # 以便真实凭证被误粘进测试时依然会被拦下。
+  show-secrets: false

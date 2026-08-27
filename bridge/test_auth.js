@@ -3,9 +3,9 @@
  * 只验证访问控制，不触碰 GHL / TTLock（故意不配置凭证）。
  */
 const assert = require('assert');
-const { request, startServer } = require('./test_helpers');
+const { request, startServer, FIXTURES } = require('./test_helpers');
 
-const SECRET = 'test-secret-do-not-ship';
+const SECRET = FIXTURES.BRIDGE_SECRET;
 
 const ACCESS_ROUTES = ['/api/access/issue', '/api/access/revoke', '/api/access/reinstate'];
 

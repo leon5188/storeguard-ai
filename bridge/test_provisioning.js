@@ -5,9 +5,9 @@
  * 历史 bug：reinstate 根本不调 TTLock，租客补缴后拿到锁不认识的号码。
  */
 const assert = require('assert');
-const { request, startServer } = require('./test_helpers');
+const { request, startServer, FIXTURES } = require('./test_helpers');
 
-const SECRET = 'test-secret-do-not-ship';
+const SECRET = FIXTURES.BRIDGE_SECRET;
 const DEAD_TTLOCK = 'http://127.0.0.1:1'; // 必然 ECONNREFUSED
 
 const ACCESS_ROUTES = ['/api/access/issue', '/api/access/revoke', '/api/access/reinstate'];
@@ -17,8 +17,8 @@ const ACCESS_ROUTES = ['/api/access/issue', '/api/access/revoke', '/api/access/r
   const broken = await startServer(3197, {
     BRIDGE_API_SECRET: SECRET,
     TTLOCK_API_BASE: DEAD_TTLOCK,
-    TTLOCK_CLIENT_ID: 'real-looking-client-id',
-    TTLOCK_ACCESS_TOKEN: 'real-looking-token'
+    TTLOCK_CLIENT_ID: FIXTURES.TTLOCK_CLIENT_ID,
+    TTLOCK_ACCESS_TOKEN: FIXTURES.TTLOCK_ACCESS_TOKEN
   });
   // B: 未配置 TTLock —— 演示模式
   const demo = await startServer(3196, { BRIDGE_API_SECRET: SECRET });
