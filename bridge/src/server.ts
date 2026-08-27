@@ -124,7 +124,14 @@ function ttlockConfigured(): boolean {
     && !TTLOCK_ACCESS_TOKEN.includes('your_');
 }
 
-class HardwareError extends Error {}
+class HardwareError extends Error {
+  /** 仅用于服务端日志。绝不回传给调用方 —— 厂商响应体可能夹带凭证或租客数据。 */
+  readonly detail?: unknown;
+  constructor(message: string, detail?: unknown) {
+    super(message);
+    this.detail = detail;
+  }
+}
 
 /**
  * TTLock OpenAPI 在业务失败时仍返回 HTTP 200，错误藏在 body 的 errcode 里，
@@ -132,7 +139,7 @@ class HardwareError extends Error {}
  */
 function assertTTLockOk(data: any, action: string) {
   if (data && data.errcode !== undefined && data.errcode !== 0) {
-    throw new HardwareError(`TTLock ${action} 失败: errcode=${data.errcode} ${data.errmsg || ''}`);
+    throw new HardwareError(`TTLock ${action} 失败 (errcode=${data.errcode})`, data);
   }
 }
 
@@ -184,7 +191,7 @@ async function provisionPasscode(
 
   const keyboardPwdId = ttlRes.data?.keyboardPwdId;
   if (!keyboardPwdId) {
-    throw new HardwareError(`TTLock keyboardPwd/add 未返回 keyboardPwdId: ${JSON.stringify(ttlRes.data)}`);
+    throw new HardwareError('TTLock keyboardPwd/add 未返回 keyboardPwdId', ttlRes.data);
   }
 
   console.log(`\x1b[32m  \u2713 TTLock 下发成功: Lock=${lockId}, PwdId=${keyboardPwdId}\x1b[0m`);
@@ -233,7 +240,11 @@ function buildGateCode(phone?: string): string {
  * 硬件类失败一律 502，且不改 GHL 状态 —— 让 GHL 工作流能在非 2xx 分支上重试或告警。
  */
 function failHardware(res: Response, tag: string, error: any) {
-  const detail = error?.response?.data || error?.message || String(error);
+  // 厂商响应体与 axios 错误详情只进日志；回传给调用方的只有一句稳定的短消息。
+  const detail = (error instanceof HardwareError ? error.detail : undefined)
+    || error?.response?.data
+    || error?.message
+    || String(error);
   console.error(`\x1b[31m[${tag} 失败]\x1b[0m`, detail);
   const status = error instanceof HardwareError || error?.isAxiosError ? 502 : 500;
   return res.status(status).json({
