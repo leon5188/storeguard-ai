@@ -125,6 +125,7 @@
     const unit = params.get('unit') || 'A-101';
     const size = params.get('size') || '10x10 Climate Controlled';
     const price = params.get('price') || '145';
+    const contactId = params.get('contact_id') || '';
     const name = params.get('name') || 'Valued Tenant';
 
     document.getElementById('contractTenantName').innerText = name;
@@ -202,7 +203,7 @@
 
       const isLocalFile = window.location.protocol === 'file:';
       const targetPath = isLocalFile ? 'step4_checkout.html' : '/checkout';
-      window.location.href = `${targetPath}?unit=${encodeURIComponent(unit)}&size=${encodeURIComponent(size)}&price=${price}`;
+      window.location.href = `${targetPath}?unit=${encodeURIComponent(unit)}&size=${encodeURIComponent(size)}&price=${price}&contact_id=${encodeURIComponent(contactId)}`;
     }
   </script>
 

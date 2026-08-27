@@ -148,7 +148,8 @@
 
         <!-- Submit Button -->
         <div class="pt-4">
-          <button type="submit" class="w-full bg-[#D2510A] hover:bg-[#b84406] text-white font-bold py-4 rounded-2xl text-base shadow-md transition transform active:scale-[0.99] flex items-center justify-center gap-2">
+          <p id="kycError" class="hidden text-sm text-[#c0392b] bg-[#c0392b]/5 border border-[#c0392b]/20 rounded-xl px-4 py-3 mb-3"></p>
+          <button type="submit" id="kycSubmitBtn" class="w-full bg-[#D2510A] hover:bg-[#b84406] text-white font-bold py-4 rounded-2xl text-base shadow-md transition transform active:scale-[0.99] flex items-center justify-center gap-2 disabled:opacity-60">
             Continue to Lease Agreement ➔
           </button>
           <div class="flex items-center justify-center gap-3 text-xs text-[#5C5346] mt-3">
@@ -191,7 +192,11 @@
       }
     }
 
-    function handleKycSubmit(e) {
+    // Bridge 地址由 GHL custom value 注入；未被渲染（本地/预览）时为空，走演示模式不建 contact
+    const RAW_BRIDGE = '{{custom_values.iot_bridge_endpoint}}';
+    const BRIDGE_BASE = (params.get('bridge') || (RAW_BRIDGE.indexOf('{{') === -1 ? RAW_BRIDGE : '')).replace(/\/$/, '');
+
+    async function handleKycSubmit(e) {
       e.preventDefault();
       const first = document.getElementById('firstName').value;
       const last = document.getElementById('lastName').value;
@@ -208,9 +213,50 @@
         price: price
       }));
 
+      let contactId = '';
+
+      if (!BRIDGE_BASE) {
+        console.warn('[StoreGuard] 未配置 iot_bridge_endpoint，演示模式：本次提交不会写入 GHL。');
+      } else {
+        const btn = document.getElementById('kycSubmitBtn');
+        const errBox = document.getElementById('kycError');
+        const originalLabel = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = 'Verifying…';
+        errBox.classList.add('hidden');
+
+        try {
+          const resp = await fetch(`${BRIDGE_BASE}/api/lead/upsert`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              first_name: first,
+              last_name: last,
+              email: email,
+              phone: phone,
+              unit_number: unit,
+              unit_size: size,
+              monthly_rent: price
+            })
+          });
+          const data = await resp.json().catch(() => ({}));
+          if (!resp.ok || !data.contact_id) {
+            throw new Error(data.error || `HTTP ${resp.status}`);
+          }
+          contactId = data.contact_id;
+        } catch (err) {
+          console.error('[StoreGuard] lead upsert failed:', err);
+          errBox.textContent = "We couldn't save your details just now. Please check your connection and try again.";
+          errBox.classList.remove('hidden');
+          btn.disabled = false;
+          btn.innerHTML = originalLabel;
+          return;
+        }
+      }
+
       const isLocalFile = window.location.protocol === 'file:';
       const targetPath = isLocalFile ? 'step3_sign_lease.html' : '/sign-lease';
-      const nextUrl = `${targetPath}?unit=${encodeURIComponent(unit)}&size=${encodeURIComponent(size)}&price=${price}&name=${encodeURIComponent(first + ' ' + last)}&phone=${encodeURIComponent(phone)}`;
+      const nextUrl = `${targetPath}?unit=${encodeURIComponent(unit)}&size=${encodeURIComponent(size)}&price=${price}&name=${encodeURIComponent(first + ' ' + last)}&phone=${encodeURIComponent(phone)}&contact_id=${encodeURIComponent(contactId)}`;
       window.location.href = nextUrl;
     }
   </script>

@@ -194,6 +194,7 @@
     const unit = params.get('unit') || 'A-101';
     const size = params.get('size') || '10x10 Climate Controlled';
     const rentPrice = parseFloat(params.get('price') || '145');
+    const contactId = params.get('contact_id') || '';
     const depositPrice = 100.00;
     const insurancePrice = 15.00;
 
@@ -279,7 +280,7 @@
         const randomPin = Math.floor(100000 + Math.random() * 900000).toString();
         const isLocalFile = window.location.protocol === 'file:';
         const targetPath = isLocalFile ? 'step5_welcome_portal.html' : '/welcome-portal';
-        window.location.href = `${targetPath}?unit=${encodeURIComponent(unit)}&gate=6250%23&pin=${randomPin}`;
+        window.location.href = `${targetPath}?unit=${encodeURIComponent(unit)}&gate=6250%23&pin=${randomPin}&contact_id=${encodeURIComponent(contactId)}`;
       }, 1200);
     }
   </script>
