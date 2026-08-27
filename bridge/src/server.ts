@@ -116,6 +116,140 @@ async function updateGHLContact(contactId: string, updates: Record<string, any>)
 }
 
 /**
+ * TTLock 凭证是否已真实配置。未配置 = 演示模式；已配置 = 必须真正写进锁体。
+ */
+function ttlockConfigured(): boolean {
+  return Boolean(TTLOCK_CLIENT_ID && TTLOCK_ACCESS_TOKEN)
+    && !TTLOCK_CLIENT_ID.includes('your_')
+    && !TTLOCK_ACCESS_TOKEN.includes('your_');
+}
+
+class HardwareError extends Error {}
+
+/**
+ * TTLock OpenAPI 在业务失败时仍返回 HTTP 200，错误藏在 body 的 errcode 里，
+ * axios 不会抛。必须显式检查，否则失败会被当成成功。
+ */
+function assertTTLockOk(data: any, action: string) {
+  if (data && data.errcode !== undefined && data.errcode !== 0) {
+    throw new HardwareError(`TTLock ${action} 失败: errcode=${data.errcode} ${data.errmsg || ''}`);
+  }
+}
+
+interface Passcode {
+  pin: string;
+  keyboardPwdId: string;
+  mode: 'ttlock' | 'simulated';
+}
+
+/**
+ * 在仓门锁上创建一个限时密码。issue 与 reinstate 共用同一条路径 ——
+ * 补缴解封必须和首次入住一样真正写进锁体，否则租客拿到的是一个锁不认识的号码。
+ *
+ * 失败一律抛出。绝不降级返回一个未写入硬件的随机码：那会让 GHL 把死码短信给租客。
+ */
+async function provisionPasscode(
+  lockId: string | undefined,
+  startMs: number,
+  endMs: number
+): Promise<Passcode> {
+  const pin = crypto.randomInt(100000, 1000000).toString();
+
+  if (!ttlockConfigured()) {
+    console.log(`\x1b[35m  \u2139 演示模式: TTLock 凭证未配置，生成的 ${pin} 未写入任何硬件\x1b[0m`);
+    return { pin, keyboardPwdId: `SIMULATED_${Date.now()}`, mode: 'simulated' };
+  }
+
+  // 凭证已配置却拿不到 lockId，说明 GHL 侧漏传了 hardware_lock_id ——
+  // 这时静默走演示模式正是最危险的情况，直接失败。
+  if (!lockId) {
+    throw new HardwareError('TTLock 已配置但请求缺少 hardware_lock_id，拒绝下发未绑定硬件的密码');
+  }
+
+  const ttlRes = await axios.post(`${TTLOCK_API_BASE}/v3/keyboardPwd/add`, null, {
+    params: {
+      clientId: TTLOCK_CLIENT_ID,
+      accessToken: TTLOCK_ACCESS_TOKEN,
+      lockId,
+      keyboardPwd: pin,
+      keyboardPwdType: 3, // 3 = Period Passcode
+      startDate: startMs,
+      endDate: endMs,
+      date: Date.now()
+    },
+    timeout: 15000
+  });
+
+  assertTTLockOk(ttlRes.data, 'keyboardPwd/add');
+
+  const keyboardPwdId = ttlRes.data?.keyboardPwdId;
+  if (!keyboardPwdId) {
+    throw new HardwareError(`TTLock keyboardPwd/add 未返回 keyboardPwdId: ${JSON.stringify(ttlRes.data)}`);
+  }
+
+  console.log(`\x1b[32m  \u2713 TTLock 下发成功: Lock=${lockId}, PwdId=${keyboardPwdId}\x1b[0m`);
+  return { pin, keyboardPwdId: keyboardPwdId.toString(), mode: 'ttlock' };
+}
+
+/**
+ * 从锁体删除一个已下发的密码。失败抛出 —— 删除失败意味着租客仍能进门，
+ * 此时不能把 GHL 标成"已停权"。
+ */
+async function revokePasscode(lockId: string | undefined, keyboardPwdId: string | undefined) {
+  if (!ttlockConfigured()) {
+    console.log(`\x1b[35m  \u2139 演示模式: 未配置 TTLock，跳过硬件密码删除\x1b[0m`);
+    return 'simulated' as const;
+  }
+  if (!lockId || !keyboardPwdId) {
+    throw new HardwareError('TTLock 已配置但请求缺少 hardware_lock_id / hardware_pwd_id，无法确认密码已从锁体删除');
+  }
+
+  const ttlRes = await axios.post(`${TTLOCK_API_BASE}/v3/keyboardPwd/delete`, null, {
+    params: {
+      clientId: TTLOCK_CLIENT_ID,
+      accessToken: TTLOCK_ACCESS_TOKEN,
+      lockId,
+      keyboardPwdId,
+      date: Date.now()
+    },
+    timeout: 15000
+  });
+
+  assertTTLockOk(ttlRes.data, 'keyboardPwd/delete');
+  console.log(`\x1b[32m  \u2713 TTLock 密码已从锁体删除: Lock=${lockId}, PwdId=${keyboardPwdId}\x1b[0m`);
+  return 'ttlock' as const;
+}
+
+/**
+ * ponytail: 大门码仍沿用手机后 4 位，200 户规模下必然碰撞，且可猜。
+ * 正确做法是随机分配 + 全场地查重，需要一份大门码台账，属于独立改动。
+ */
+function buildGateCode(phone?: string): string {
+  const digits = (phone || '').replace(/[^0-9]/g, '');
+  return digits.length >= 4 ? digits.slice(-4) + '#' : '5938#';
+}
+
+/**
+ * 硬件类失败一律 502，且不改 GHL 状态 —— 让 GHL 工作流能在非 2xx 分支上重试或告警。
+ */
+function failHardware(res: Response, tag: string, error: any) {
+  const detail = error?.response?.data || error?.message || String(error);
+  console.error(`\x1b[31m[${tag} 失败]\x1b[0m`, detail);
+  const status = error instanceof HardwareError || error?.isAxiosError ? 502 : 500;
+  return res.status(status).json({
+    success: false,
+    error: error instanceof HardwareError ? error.message : 'Hardware operation failed',
+    hardware_synced: false
+  });
+}
+
+function leaseWindow(start?: string, end?: string): [number, number] {
+  const startMs = start ? new Date(start).getTime() : Date.now();
+  const endMs = end ? new Date(end).getTime() : Date.now() + 30 * 86400000;
+  return [startMs, endMs];
+}
+
+/**
  * 0. Healthcheck
  */
 app.get('/health', (_req: Request, res: Response) => {
@@ -141,67 +275,34 @@ app.post('/api/access/issue', requireBridgeSecret, async (req: Request, res: Res
 
     console.log(`\n\x1b[36m[ACCESS ISSUE] 正在为 Contact=${contact_id} 办理入住 (Unit: ${unit_number || 'N/A'})...\x1b[0m`);
 
-    // A. 计算 6 位独立仓门动态密码 (TOTP/离线密码模拟)
-    const randomPin = Math.floor(100000 + Math.random() * 900000).toString();
-    const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
-    const gateCode = cleanPhone.length >= 4 ? cleanPhone.slice(-4) + '#' : '5938#';
+    const [startMs, endMs] = leaseWindow(lease_start_date, lease_end_date);
+    const passcode = await provisionPasscode(hardware_lock_id, startMs, endMs);
+    const gateCode = buildGateCode(phone);
 
-    let keyboardPwdId = 'MOCK_PWD_' + Date.now();
-
-    // B. 若已配置真实 TTLock 硬件与凭证，调用 OpenAPI
-    if (hardware_lock_id && TTLOCK_CLIENT_ID && TTLOCK_ACCESS_TOKEN && !TTLOCK_CLIENT_ID.includes('your_')) {
-      const startDateMs = lease_start_date ? new Date(lease_start_date).getTime() : Date.now();
-      const endDateMs = lease_end_date ? new Date(lease_end_date).getTime() : Date.now() + 30 * 86400000;
-
-      try {
-        const ttlRes = await axios.post(`${TTLOCK_API_BASE}/v3/keyboardPwd/add`, null, {
-          params: {
-            clientId: TTLOCK_CLIENT_ID,
-            accessToken: TTLOCK_ACCESS_TOKEN,
-            lockId: hardware_lock_id,
-            keyboardPwd: randomPin,
-            keyboardPwdType: 3, // 3 = Period Passcode
-            startDate: startDateMs,
-            endDate: endDateMs,
-            date: Date.now(),
-          }
-        });
-
-        if (ttlRes.data?.keyboardPwdId) {
-          keyboardPwdId = ttlRes.data.keyboardPwdId.toString();
-          console.log(`\x1b[32m  ✓ TTLock 云端硬件下发成功: Lock=${hardware_lock_id}, PwdId=${keyboardPwdId}\x1b[0m`);
-        }
-      } catch (err: any) {
-        console.warn(`  ! TTLock 云端调用警告 (降级为离线算法): ${err.message}`);
-      }
-    } else {
-      console.log(`\x1b[35m  ℹ️ 模拟模式: 已通过 TOTP 离线算法生成 6 位时效开门密码\x1b[0m`);
-    }
-
-    // C. 更新 GHL 联系人字段
+    // 硬件写入成功后才更新 GHL —— GHL 状态必须反映锁体的真实状态
     await updateGHLContact(contact_id, {
       gate_access_code: gateCode,
-      unit_lock_pin: randomPin,
-      hardware_pwd_id: keyboardPwdId,
+      unit_lock_pin: passcode.pin,
+      hardware_pwd_id: passcode.keyboardPwdId,
       occupancy_status: 'Active_Good',
       delinquent_days: 0
     });
 
-    console.log(`\x1b[32m  ✓ GHL 字段已同步: GateCode=${gateCode}, UnitPIN=${randomPin}, Status=Active_Good\x1b[0m`);
+    console.log(`\x1b[32m  \u2713 GHL 字段已同步: GateCode=${gateCode}, Status=Active_Good\x1b[0m`);
 
     return res.json({
       success: true,
       contact_id,
       unit_number,
       gate_access_code: gateCode,
-      unit_lock_pin: randomPin,
-      hardware_pwd_id: keyboardPwdId,
+      unit_lock_pin: passcode.pin,
+      hardware_pwd_id: passcode.keyboardPwdId,
+      hardware_mode: passcode.mode,
       status: 'Active_Good'
     });
 
   } catch (error: any) {
-    console.error(`\x1b[31m[ACCESS ISSUE 失败]\x1b[0m`, error.response?.data || error.message);
-    return res.status(500).json({ error: error.message });
+    return failHardware(res, 'ACCESS ISSUE', error);
   }
 });
 
@@ -212,46 +313,35 @@ app.post('/api/access/revoke', requireBridgeSecret, async (req: Request, res: Re
   try {
     const { contact_id, unit_number, hardware_lock_id, hardware_pwd_id, reason } = req.body;
 
-    console.log(`\n\x1b[31m[ACCESS REVOKE] 收到停权指令: Contact=${contact_id} (Unit: ${unit_number || 'N/A'}), 原因: ${reason || 'Overdue'}\x1b[0m`);
-
-    // A. 若有真实 TTLock 硬件，注销密码
-    if (hardware_lock_id && hardware_pwd_id && TTLOCK_CLIENT_ID && TTLOCK_ACCESS_TOKEN && !TTLOCK_CLIENT_ID.includes('your_')) {
-      try {
-        await axios.post(`${TTLOCK_API_BASE}/v3/keyboardPwd/delete`, null, {
-          params: {
-            clientId: TTLOCK_CLIENT_ID,
-            accessToken: TTLOCK_ACCESS_TOKEN,
-            lockId: hardware_lock_id,
-            keyboardPwdId: hardware_pwd_id,
-            date: Date.now(),
-          }
-        });
-        console.log(`\x1b[32m  ✓ TTLock 密码已从云端与硬件销毁\x1b[0m`);
-      } catch (err: any) {
-        console.warn(`  ! TTLock 删除密码警告: ${err.message}`);
-      }
+    if (!contact_id) {
+      return res.status(400).json({ error: 'Missing contact_id' });
     }
 
-    // B. 更新 GHL 字段为锁定停权
+    console.log(`\n\x1b[31m[ACCESS REVOKE] 收到停权指令: Contact=${contact_id} (Unit: ${unit_number || 'N/A'}), 原因: ${reason || 'Overdue'}\x1b[0m`);
+
+    // 先确认密码真的从锁体删掉了，再改 GHL。
+    // 反过来会造成 GHL 显示"已停权"而租客照样刷得开门。
+    const mode = await revokePasscode(hardware_lock_id, hardware_pwd_id);
+
     await updateGHLContact(contact_id, {
       occupancy_status: 'Access_Suspended',
       unit_lock_pin: 'LOCKED',
       gate_access_code: 'SUSPENDED'
     });
 
-    console.log(`\x1b[31m  🔒 GHL 门禁已熔断锁定: Status=Access_Suspended, PIN=LOCKED\x1b[0m`);
+    console.log(`\x1b[31m  \u{1F512} GHL 门禁已锁定: Status=Access_Suspended\x1b[0m`);
 
     return res.json({
       success: true,
       contact_id,
       unit_number,
+      hardware_mode: mode,
       status: 'Access_Suspended',
       message: 'Access revoked & unit locked'
     });
 
   } catch (error: any) {
-    console.error(`\x1b[31m[ACCESS REVOKE 失败]\x1b[0m`, error.message);
-    return res.status(500).json({ error: error.message });
+    return failHardware(res, 'ACCESS REVOKE', error);
   }
 });
 
@@ -260,37 +350,45 @@ app.post('/api/access/revoke', requireBridgeSecret, async (req: Request, res: Re
  */
 app.post('/api/access/reinstate', requireBridgeSecret, async (req: Request, res: Response) => {
   try {
-    const { contact_id, phone, unit_number, hardware_lock_id } = req.body;
+    const { contact_id, phone, unit_number, hardware_lock_id, lease_start_date, lease_end_date } = req.body;
 
-    console.log(`\n\x1b[32m[ACCESS REINSTATE] 正在为 Contact=${contact_id} 执行秒级解封...\x1b[0m`);
+    if (!contact_id) {
+      return res.status(400).json({ error: 'Missing contact_id' });
+    }
 
-    const newPin = Math.floor(100000 + Math.random() * 900000).toString();
-    const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
-    const gateCode = cleanPhone.length >= 4 ? cleanPhone.slice(-4) + '#' : '5938#';
+    console.log(`\n\x1b[32m[ACCESS REINSTATE] 正在为 Contact=${contact_id} 解封 (Unit: ${unit_number || 'N/A'})...\x1b[0m`);
 
-    // 更新 GHL 字段恢复正常
+    // revoke 已把旧密码从锁体删掉，这里必须真正写入一个新的。
+    // 只发短信不写锁 = 交了钱的租客站在门口打不开。
+    const [startMs, endMs] = leaseWindow(lease_start_date, lease_end_date);
+    const passcode = await provisionPasscode(hardware_lock_id, startMs, endMs);
+    const gateCode = buildGateCode(phone);
+
+    // 必须回写新的 hardware_pwd_id，否则下次 revoke 拿着已失效的旧 id 删不掉
     await updateGHLContact(contact_id, {
       gate_access_code: gateCode,
-      unit_lock_pin: newPin,
+      unit_lock_pin: passcode.pin,
+      hardware_pwd_id: passcode.keyboardPwdId,
       occupancy_status: 'Active_Good',
       delinquent_days: 0,
       total_amount_due: 0
     });
 
-    console.log(`\x1b[32m  🔓 门禁已秒级恢复: GateCode=${gateCode}, NewUnitPIN=${newPin}, Status=Active_Good\x1b[0m`);
+    console.log(`\x1b[32m  \u{1F513} 门禁已恢复: GateCode=${gateCode}, Status=Active_Good\x1b[0m`);
 
     return res.json({
       success: true,
       contact_id,
       unit_number,
       gate_access_code: gateCode,
-      unit_lock_pin: newPin,
+      unit_lock_pin: passcode.pin,
+      hardware_pwd_id: passcode.keyboardPwdId,
+      hardware_mode: passcode.mode,
       status: 'Active_Good'
     });
 
   } catch (error: any) {
-    console.error(`\x1b[31m[ACCESS REINSTATE 失败]\x1b[0m`, error.message);
-    return res.status(500).json({ error: error.message });
+    return failHardware(res, 'ACCESS REINSTATE', error);
   }
 });
 

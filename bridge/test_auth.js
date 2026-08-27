@@ -2,43 +2,10 @@
  * Bridge 鉴权自检：node test_auth.js
  * 只验证访问控制，不触碰 GHL / TTLock（故意不配置凭证）。
  */
-const { spawn } = require('child_process');
-const http = require('http');
 const assert = require('assert');
+const { request, startServer } = require('./test_helpers');
 
 const SECRET = 'test-secret-do-not-ship';
-
-function request(port, method, path, token, body) {
-  return new Promise((resolve, reject) => {
-    const headers = { 'Content-Type': 'application/json' };
-    if (token) headers.Authorization = 'Bearer ' + token;
-    if (method === 'OPTIONS') headers.Origin = 'https://example.com';
-    const req = http.request({ hostname: '127.0.0.1', port, path, method, headers }, (res) => {
-      let body = '';
-      res.on('data', (c) => (body += c));
-      res.on('end', () => resolve({ status: res.statusCode, headers: res.headers, body }));
-    });
-    req.on('error', reject);
-    if (method !== 'OPTIONS') req.write(JSON.stringify(body || {}));
-    req.end();
-  });
-}
-
-function startServer(port, env) {
-  const child = spawn('node', [__dirname + '/dist/server.js'], {
-    env: { ...process.env, PORT: String(port), GHL_API_KEY: '', GHL_LOCATION_ID: '', ...env },
-    stdio: 'ignore'
-  });
-  return new Promise((resolve, reject) => {
-    const deadline = Date.now() + 8000;
-    (function poll() {
-      request(port, 'GET', '/health').then(() => resolve(child)).catch(() => {
-        if (Date.now() > deadline) return reject(new Error(`server on :${port} never came up`));
-        setTimeout(poll, 120);
-      });
-    })();
-  });
-}
 
 const ACCESS_ROUTES = ['/api/access/issue', '/api/access/revoke', '/api/access/reinstate'];
 
